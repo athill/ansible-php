@@ -1,0 +1,153 @@
+---
+- hosts: test
+  become: yes
+  become_method: sudo
+
+
+  tasks:
+
+  - name: vars
+    include_vars: vars.yml  
+
+  - name: add mysql repo
+    apt_repository:
+      repo: 'deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-5.7'
+      state: present
+
+
+  - name: install packages
+    apt: name={{ item }} update_cache=yes state=latest force=yes
+    with_items:
+      - git
+      - mcrypt
+      - nginx
+      - php5-cli
+      - php5-curl
+      - php5-fpm
+      - php5-intl
+      - php5-json
+      - php5-mcrypt
+      - php5-mysql
+      - nodejs
+      - npm
+      # - python-dev
+      # - python-mysqldb
+
+  # # force these
+  # - name: install mysql
+  #   apt: name={{ item }} update_cache=yes state=latest force=yes
+  #   with_items: 
+  #     - mysql-server
+  #     - libmysqlclient-dev
+
+  # - name: ensure mysql is running and starts on boot
+  #   service: name=mysql state=started enabled=true
+
+  # 'localhost' needs to be the last item for idempotency, see
+  # http://ansible.cc/docs/modules.html#mysql-user
+  # - name: update mysql root password for all root accounts
+  #   mysql_user: name=root host={{ item }} password={{ mysql_root_password }} priv=*.*:ALL,GRANT
+  #   with_items:
+  #     - "{{ ansible_hostname }}"
+  #     - 127.0.0.1
+  #     - ::1
+  #     - localhost
+
+  # - debug: var=mysql_root_password
+
+  # - name: copy .my.cnf file with root password credentials
+  #   template: src=.my.cnf dest=/root/.my.cnf owner=root mode=0600
+
+  - name: ensure php5-fpm cgi.fix_pathinfo=0
+    lineinfile: dest=/etc/php5/fpm/php.ini regexp='^(.*)cgi.fix_pathinfo=' line=cgi.fix_pathinfo=0
+    notify:
+      - restart php5-fpm
+      - restart nginx
+
+  - name: enable php5 mcrypt module
+    shell: php5enmod mcrypt
+    args:
+      creates: /etc/php5/cli/conf.d/20-mcrypt.ini
+
+  - name: create /var/www/ directory
+    file: dest=/var/www/ state=directory owner=www-data group=www-data mode=0700
+
+  - name: Clone git repository
+    git: >
+      dest=/var/www/laravel
+      repo=https://github.com/athill/wimf
+      update=no
+    become: yes
+    become_user: www-data
+    register: cloned
+
+  - name: chown /var/www
+    command: "{{ item }}"
+    with_items:
+      - chown -R athill:www-data /var/www
+      - find /var/www/ -type d -exec chmod 775 {} +
+      - find /var/www/ -type f -exec chmod 664 {} +
+
+  - name: install composer
+    shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    args:
+      creates: /usr/local/bin/composer
+
+  - name: composer create-project
+    composer: command=create-project working_dir=/var/www/laravel optimize_autoloader=no
+    become: yes
+    become_user: athill
+    when: cloned|changed
+
+  - name: Configure nginx
+    template: src=nginx.conf dest=/etc/nginx/sites-available/default
+    notify:
+      - restart php5-fpm
+      - restart nginx
+
+  # - name: install nodejs
+  #   apt: name=nodejs update_cache=yes  
+
+  - name: install and configure n, gulp, and webpack
+    command: "{{ item }}"
+    with_items:
+    - npm cache clean -f
+    - npm install -g n 
+    - npm install -g gulp
+    - npm install -g webpack
+    - n stable  
+
+  - name: run npm install
+    shell: npm install
+    become: yes
+    become_user: athill
+    args:
+      chdir: /var/www/laravel
+
+  - name: run webpack
+    command: "{{item}}"
+    with_items:
+    - npm run webpack
+    become: yes
+    become_user: athill
+    args:
+      chdir: /var/www/laravel
+
+
+  - name: install and run gulp
+    command: "{{ item }}"
+    with_items:
+      - npm install gulp
+      - gulp less
+    become: yes
+    become_user: athill
+    args:
+      chdir: /var/www/laravel
+    notify: restart nginx
+
+  handlers:
+   - name: restart php5-fpm
+     shell: service php5-fpm restart
+
+   - name: restart nginx
+     service: name=nginx state=restarted 

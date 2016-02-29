@@ -1,0 +1,38 @@
+---
+- hosts: php
+  become: yes
+  become_method: sudo
+
+
+  tasks:
+
+  - name: disable root ssh 
+    lineinfile: dest=/etc/ssh/sshd_config regexp='^(.*)PermitRootLogin' line='PermitRootLogin no'
+    notify:
+      - restart ssh
+
+  # - name: configure and enable firewall
+  #   command: "{{ item }}"
+  #   with_items:
+  #   - ufw allow ssh
+  #   - ufw allow 80/tcp   # http
+  #   - ufw allow 443/tcp  # https
+  #   - ufw allow 25/tcp 	# smtp
+  #   - ufw enable		# enable
+
+  - name: install ntp
+    apt: name=ntp update_cache=yes  
+
+  - name: make swap
+    command: "{{ item }}"
+    with_items:
+    - fallocate -l 1G /swapfile
+    - chmod 600 /swapfile
+    - mkswap /swapfile
+    - swapon /swapfile
+    - sh -c 'echo "/swapfile none swap sw 0 0" >> /etc/fstab'
+
+
+  handlers:
+  - name: restart ssh
+    service: name=ssh state=restarted
