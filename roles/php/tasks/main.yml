@@ -1,74 +1,85 @@
 ---
 # php, nginx, checkout project, composer
-  # PHP
-  - name: install php packages
-    apt: name={{ item }} update_cache=yes state=latest force=yes
-    with_items:
-      - mcrypt
-      - nginx
-      - php5-cli
-      - php5-curl
-      - php5-fpm
-      - php5-intl
-      - php5-json
-      - php5-mcrypt
-      - php5-mysql
+# PHP
+- name: install php packages
+  apt: name={{ item }} update_cache=yes state=latest force=yes
+  with_items:
+    - mcrypt
+    - nginx
+    - php5-cli
+    - php5-curl
+    - php5-fpm
+    - php5-intl
+    - php5-json
+    - php5-mcrypt
+    - php5-mysql
 
-  - name: Configure nginx
-    template: src=nginx.conf.j2 dest=/etc/nginx/sites-available/default
-    notify:
-      - restart php5-fpm
-      - restart nginx      
+- name: Configure nginx
+  template: src=nginx.conf.j2 dest=/etc/nginx/sites-available/default
+  notify:
+    - restart php5-fpm
+    - restart nginx      
 
-  - name: ensure php5-fpm cgi.fix_pathinfo=0
-    lineinfile: dest=/etc/php5/fpm/php.ini regexp='^(.*)cgi.fix_pathinfo=' line=cgi.fix_pathinfo=0
-    notify:
-      - restart php5-fpm
-      - restart nginx
+- name: ensure php5-fpm cgi.fix_pathinfo=0
+  lineinfile: dest=/etc/php5/fpm/php.ini regexp='^(.*)cgi.fix_pathinfo=' line=cgi.fix_pathinfo=0
+  notify:
+    - restart php5-fpm
+    - restart nginx
 
-  - name: enable php5 mcrypt module
-    shell: php5enmod mcrypt
-    args:
-      creates: /etc/php5/cli/conf.d/20-mcrypt.ini
+- name: enable php5 mcrypt module
+  shell: php5enmod mcrypt
+  args:
+    creates: /etc/php5/cli/conf.d/20-mcrypt.ini
 
-  # checkout project
-  - name: create /var/www/ directory
-    file: dest=/var/www/ state=directory owner=www-data group=www-data mode=0700
+# checkout project
+- name: create /var/www/ directory
+  file: dest=/var/www/ state=directory owner=www-data group=www-data mode=0700
 
-  - name: Clone git repository
-    git: >
-      dest=/var/www/laravel
-      repo=https://github.com/athill/wimf
-      update=no
-    become: yes
-    become_user: www-data
-    register: cloned
+- name: Clone git repository
+  git: >
+    dest=/var/www/laravel
+    repo=https://github.com/athill/wimf
+    update=no
+  become: yes
+  become_user: www-data
+  register: cloned
 
-  - name: chown /var/www
-    command: "{{ item }}"
-    with_items:
-      - chown -R athill:www-data /var/www
-      - find /var/www/ -type d -exec chmod 775 {} +
-      - find /var/www/ -type f -exec chmod 664 {} +
+- name: chown /var/www
+  command: "{{ item }}"
+  with_items:
+    - chown -R athill:www-data /var/www
+    - find /var/www/ -type d -exec chmod 775 {} +
+    - find /var/www/ -type f -exec chmod 664 {} +
 
-  - name: copy .env file
-    template: src=.env.j2 dest=/var/www/laravel/.env
+- name: copy .env file
+  template: src=.env.j2 dest=/var/www/laravel/.env  
 
-  - name: artisan migrate
-    shell: php /var/www/laravel/artisan migrate --force
-    become: yes
-    become_user: athill
-    args:
-      chdir: /var/www/laravel    
+# composer oauth token: 523e0555732af5e1be335f42ae88430c21ccb0ed
+- name: install composer
+  shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+  args:
+    creates: /usr/local/bin/composer
 
-  # composer
-  - name: install composer
-    shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-    args:
-      creates: /usr/local/bin/composer
+- name: add composer config dir for github oauth
+  command: mkdir -p /home/athill/.config/composer
 
-  - name: composer create-project
-    composer: command=create-project working_dir=/var/www/laravel optimize_autoloader=no
-    become: yes
-    become_user: athill
-    when: cloned|changed
+- name: add auth.json file
+  template: src=github-oauth.json.j2 dest=/home/athill/.config/composer/auth.json    
+
+- name: composer create-project
+  composer: command=create-project working_dir=/var/www/laravel optimize_autoloader=no
+  become: yes
+  become_user: athill
+  when: cloned|changed
+
+# artisan migrate
+- name: artisan migrate
+  shell: php /var/www/laravel/artisan migrate --force
+  become: yes
+  become_user: athill
+  args:
+    chdir: /var/www/laravel  
+
+- name: restart nginx for good measure
+  notify:
+    - restart nginx    
