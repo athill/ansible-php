@@ -1,0 +1,6 @@
+---
+
+  - name: install packages
+    apt: name={{ item }} update_cache=yes state=latest force=yes
+    with_items:
+      - git

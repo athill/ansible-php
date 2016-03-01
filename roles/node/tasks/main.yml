@@ -1,0 +1,43 @@
+---
+
+  - name: install packages
+    apt: name={{ item }} update_cache=yes state=latest force=yes
+    with_items:
+      - nodejs
+      - npm
+
+  - name: install and configure n, gulp, and webpack
+    command: "{{ item }}"
+    with_items:
+    - npm cache clean -f
+    - npm install -g n 
+    - npm install -g gulp
+    - npm install -g webpack
+    - n stable  
+
+  - name: run npm install
+    shell: npm install
+    become: yes
+    become_user: athill
+    args:
+      chdir: /var/www/laravel
+
+  - name: run webpack
+    command: "{{item}}"
+    with_items:
+    - npm run webpack
+    become: yes
+    become_user: athill
+    args:
+      chdir: /var/www/laravel
+
+
+  - name: install and run gulp
+    command: "{{ item }}"
+    with_items:
+      - npm install gulp
+      - gulp less
+    become: yes
+    become_user: athill
+    args:
+      chdir: /var/www/laravel      

@@ -5,6 +5,10 @@
 
 
   tasks:
+  - name: add mysql repo
+    apt_repository:
+      repo: 'deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-5.7'
+      state: present
 
   - name: disable root ssh 
     lineinfile: dest=/etc/ssh/sshd_config regexp='^(.*)PermitRootLogin' line='PermitRootLogin no'
