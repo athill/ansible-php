@@ -24,6 +24,18 @@
   #   - ufw allow 25/tcp 	# smtp
   #   - ufw enable		# enable
 
+  - name: Enable UFW
+    ufw: direction=incoming policy=deny state=enabled
+
+  - name: UFW limit SSH
+    ufw: rule=limit port=ssh
+
+  - name: UFW open HTTP
+    ufw: rule=allow port=http
+
+  - name: UFW open HTTPS
+    ufw: rule=allow port=https
+
   - name: install ntp
     apt: name=ntp update_cache=yes  
 

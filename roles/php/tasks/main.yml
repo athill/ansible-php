@@ -54,6 +54,13 @@
   - name: copy .env file
     template: src=.env.j2 dest=/var/www/laravel/.env
 
+  - name: artisan migrate
+    shell: php /var/www/laravel/artisan migrate --force
+    become: yes
+    become_user: athill
+    args:
+      chdir: /var/www/laravel    
+
   # composer
   - name: install composer
     shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
