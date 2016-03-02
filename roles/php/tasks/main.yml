@@ -54,7 +54,7 @@
 - name: copy .env file
   template: src=.env.j2 dest=/var/www/laravel/.env  
 
-# composer oauth token: 523e0555732af5e1be335f42ae88430c21ccb0ed
+# composer
 - name: install composer
   shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
   args:
