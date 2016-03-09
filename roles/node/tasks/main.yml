@@ -18,7 +18,7 @@
   - name: run npm install
     shell: npm install
     become: yes
-    become_user: athill
+    become_user: "{{user}}"
     args:
       chdir: /var/www/laravel
 
@@ -27,7 +27,7 @@
     with_items:
     - npm run webpack
     become: yes
-    become_user: athill
+    become_user: "{{user}}"
     args:
       chdir: /var/www/laravel
 
@@ -38,6 +38,6 @@
       - npm install gulp
       - gulp less
     become: yes
-    become_user: athill
+    become_user: "{{user}}"
     args:
       chdir: /var/www/laravel      

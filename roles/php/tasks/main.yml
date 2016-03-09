@@ -61,22 +61,22 @@
     creates: /usr/local/bin/composer
 
 - name: add composer config dir for github oauth
-  command: mkdir -p /home/athill/.config/composer
+  command: mkdir -p "{{user_dir}}/.config/composer"
 
 - name: add auth.json file
-  template: src=github-oauth.json.j2 dest=/home/athill/.config/composer/auth.json owner=athill   
+  template: src=github-oauth.json.j2 dest="{{user_dir}}/.config/composer/auth.json" owner=athill
 
 - name: composer create-project
   composer: command=create-project working_dir=/var/www/laravel optimize_autoloader=no
   become: yes
-  become_user: athill
+  become_user: "{{user}}"
   when: cloned|changed
 
 # artisan migrate
 - name: artisan migrate
   shell: php /var/www/laravel/artisan migrate --force
   become: yes
-  become_user: athill
+  become_user: "{{user}}"
   args:
     chdir: /var/www/laravel  
 
