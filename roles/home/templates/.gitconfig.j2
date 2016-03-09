@@ -1,0 +1,14 @@
+[user]
+	name = Andy Hill
+	email = andy@andyhill.us
+[alias]
+        co = checkout
+        ci = commit
+        br = branch
+        ec = config --global -e
+        cm = !git add -A && git commit -m
+        hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
+        st = status
+        lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+[push]
+	default = simple

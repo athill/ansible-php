@@ -64,7 +64,7 @@
   command: mkdir -p /home/athill/.config/composer
 
 - name: add auth.json file
-  template: src=github-oauth.json.j2 dest=/home/athill/.config/composer/auth.json    
+  template: src=github-oauth.json.j2 dest=/home/athill/.config/composer/auth.json owner=athill   
 
 - name: composer create-project
   composer: command=create-project working_dir=/var/www/laravel optimize_autoloader=no
@@ -80,6 +80,3 @@
   args:
     chdir: /var/www/laravel  
 
-- name: restart nginx for good measure
-  notify:
-    - restart nginx    

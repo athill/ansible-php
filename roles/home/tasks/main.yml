@@ -1,0 +1,16 @@
+---
+
+- name: make bin dir
+  file: path=/home/athill/bin state=directory mode=0755 owner=athill
+
+- name: copy deploy script
+  template: src=deploy.j2 dest=/home/athill/bin/deploy owner=athill mode=0700 
+
+- name: copy gitconfig script
+  template: src=.gitconfig.j2 dest=/home/athill/.gitconfig owner=athill mode=0644
+
+- name: copy git-completion script
+  template: src=.git-completion.bash dest=/home/athill/.git-completion.bash owner=athill mode=0644  
+
+- name: copy .bash_profile script
+  template: src=.bash_profile.j2 dest=/home/athill/.bash_profile owner=athill mode=0644    

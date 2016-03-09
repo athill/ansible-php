@@ -1,0 +1,24 @@
+# cd to project dir
+cd /var/www/laravel
+
+# checkout develop branch
+git checkout develop # assumes branch exists
+git pull
+
+# update composer
+composer update
+
+# artisan migrations
+php artisan migrate
+
+# set up npm
+n use stable
+
+# update npm
+npm install
+
+# webpack
+npm run webpack
+
+# update less
+gulp less
