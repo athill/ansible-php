@@ -10,4 +10,5 @@ Ansible playbooks for LEMP/Node setup
  - php: install and configure php, nginx, composer; clone project, run composer install
 
  ## Todo
- - [ ] letsencrypt
+ - [x] letsencrypt
+ - [ ] multiple sites
