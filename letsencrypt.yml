@@ -4,9 +4,4 @@
   become_method: sudo
 
   roles:
-    - common
-    - mysql
-    - php
-    - node
-    - home
     - letsencrypt

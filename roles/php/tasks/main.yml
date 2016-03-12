@@ -37,9 +37,10 @@
 
 - name: Clone git repository
   git: >
-    dest=/var/www/laravel
-    repo=https://github.com/athill/wimf
+    dest={{project_dir}}
+    repo={{repo_url}}
     update=no
+    version={{ repo_version }}
   become: yes
   become_user: www-data
   register: cloned
@@ -47,12 +48,10 @@
 - name: chown /var/www
   command: "{{ item }}"
   with_items:
-    - chown -R athill:www-data /var/www
+    - chown -R {{user}}:www-data /var/www
     - find /var/www/ -type d -exec chmod 775 {} +
     - find /var/www/ -type f -exec chmod 664 {} +
 
-- name: copy .env file
-  template: src=.env.j2 dest=/var/www/laravel/.env  
 
 # composer
 - name: install composer
@@ -64,19 +63,24 @@
   command: mkdir -p "{{user_dir}}/.config/composer"
 
 - name: add auth.json file
-  template: src=github-oauth.json.j2 dest="{{user_dir}}/.config/composer/auth.json" owner=athill
+  template: src=github-oauth.json.j2 dest="{{user_dir}}/.config/composer/auth.json" owner="{{user}}"
 
 - name: composer create-project
-  composer: command=create-project working_dir=/var/www/laravel optimize_autoloader=no
+  composer: command=create-project working_dir="{{project_dir}}" optimize_autoloader=no
   become: yes
   become_user: "{{user}}"
   when: cloned|changed
 
+- name: copy .env file
+  template: src=.env.j2 dest={{project_dir}}/.env force=yes
+
+- debug: var=project_dir    
+
 # artisan migrate
 - name: artisan migrate
-  shell: php /var/www/laravel/artisan migrate --force
+  shell: php "{{project_dir}}/artisan" migrate --force
   become: yes
   become_user: "{{user}}"
   args:
-    chdir: /var/www/laravel  
+    chdir: "{{project_dir}}"  
 
