@@ -48,11 +48,11 @@ Ansible playbooks to set up LEMP server and publish git repo
 - mailgun_secret: mailgun secret in laravel services config
 
 ### user settings
-- user_dir_path:
-- user:
-- user_dir:
-- user_email:
-- user_name:
+- user_dir_path: path to user directories (generally /home)
+- user: username of user
+- user_dir: "{{user_dir_path}}/{{user}}"
+- user_email: email for user
+- user_name: name of user
 
 
 
