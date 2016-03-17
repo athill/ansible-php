@@ -4,9 +4,10 @@ Ansible playbooks to set up LEMP server and publish git repo
 
 ## technologies
 - ansible
+- mysql
+- nginx
 - php
 - laravel
-- nginx
 - node
 
 ## roles
