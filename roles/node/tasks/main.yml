@@ -15,6 +15,12 @@
     - npm install -g webpack
     - n stable  
 
+  - name: set NODE_ENV
+    shell: export NODE_ENV={{app_env}}
+    become: yes
+    become_user: "{{user}}"
+
+
   - name: run npm install
     shell: npm install
     become: yes
