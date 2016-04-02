@@ -64,6 +64,8 @@
 
 - name: add auth.json file
   template: src=github-oauth.json.j2 dest="{{user_dir}}/.config/composer/auth.json" owner="{{user}}"
+  become: yes
+  become_user: {{user}}
 
 - name: composer create-project
   composer: command=create-project working_dir="{{project_dir}}" optimize_autoloader=no
