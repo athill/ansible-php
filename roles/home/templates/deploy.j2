@@ -1,8 +1,8 @@
 # cd to project dir
 cd {{ project_dir }}
 
-# checkout develop branch
-git checkout develop # assumes branch exists
+# checkout branch
+git checkout {{ repo_version }}
 git pull
 
 # update composer
