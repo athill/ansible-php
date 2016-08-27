@@ -1,5 +1,0 @@
-[test]
-162.243.203.15 ansible_ssh_user=athill
-
-[production]
-wimf.space ansible_ssh_user=athill
