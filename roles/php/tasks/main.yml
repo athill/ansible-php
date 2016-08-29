@@ -13,6 +13,7 @@
     - php5-json
     - php5-mcrypt
     - php5-mysql
+    - php-xdebug
 
 - name: Configure nginx
   template: src=nginx.conf.j2 dest=/etc/nginx/sites-available/default
