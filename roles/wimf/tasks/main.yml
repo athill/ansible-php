@@ -1,0 +1,88 @@
+---
+## wimf
+# checkout project
+- name: create /var/www/ directory
+  file: dest=/var/www/ state=directory owner=www-data group=www-data mode=0775
+
+- name: Clone git repository
+  git: >
+    dest={{project_dir}}
+    repo={{repo_url}}
+    update=no
+    version={{ repo_version }}
+  become: yes
+  become_user: www-data
+  register: cloned
+
+- name: chown /var/www
+  command: "{{ item }}"
+  with_items:
+    - chown -R {{user}}:www-data /var/www
+    - find /var/www/ -type d -exec chmod 775 {} +
+    - find /var/www/ -type f -exec chmod 664 {} +
+
+# - name: add composer config dir for github oauth
+#   command: mkdir -p "{{user_dir}}/.config/composer"
+#   become: yes
+#   become_user: "{{user}}"
+
+# - name: add auth.json file
+#   template: src=github-oauth.json.j2 dest="{{user_dir}}/.config/composer/auth.json" owner="{{user}}"
+#   become: yes
+#   become_user: "{{user}}"
+
+- name: composer create-project
+  composer: 
+    command: install 
+    working_dir: "{{project_dir}}" 
+    # optimize_autoloader=no
+  become: yes
+  become_user: "{{user}}"
+  # when: cloned|changed
+
+- name: copy .env file
+  template: src=.env.j2 dest={{project_dir}}/.env force=yes
+
+- debug: var=project_dir    
+
+# artisan migrate
+- name: artisan migrate
+  shell: php "{{project_dir}}/artisan" migrate --force
+  become: yes
+  become_user: "{{user}}"
+  args:
+    chdir: "{{project_dir}}"  
+
+- name: set NODE_ENV
+  shell: export NODE_ENV={{app_env}}
+  become: yes
+  become_user: "{{user}}"
+
+
+- name: run npm install
+  shell: npm install
+  become: yes
+  become_user: "{{user}}"
+  args:
+    chdir: "{{project_dir}}"
+
+- name: build
+  command: "{{item}}"
+  with_items:
+  - npm run build
+  become: yes
+  become_user: "{{user}}"
+  args:
+    chdir: "{{project_dir}}"
+
+
+- name: install and run gulp
+  command: "{{ item }}"
+  with_items:
+    - npm install gulp
+    - gulp less
+  become: yes
+  become_user: "{{user}}"
+  args:
+    chdir: "{{project_dir}}"
+

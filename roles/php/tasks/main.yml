@@ -1,91 +1,41 @@
 ---
-# php, nginx, checkout project, composer
+# php, nginx, composer
 # PHP
-- name: install php packages
+- name: install nginx and php packages
   apt: name={{ item }} update_cache=yes state=latest force=yes
   with_items:
     - mcrypt
     - nginx
-    - php5-cli
-    - php5-curl
-    - php5-fpm
-    - php5-intl
-    - php5-json
-    - php5-mcrypt
-    - php5-mysql
+    - php{{php_version}}-cli
+    - php{{php_version}}-curl
+    - php{{php_version}}-fpm
+    - php{{php_version}}-intl
+    - php{{php_version}}-json
+    - php{{php_version}}-mcrypt
+    - php{{php_version}}-mbstring
+    - php{{php_version}}-mysql
+    - php{{php_version}}-xml
     - php-xdebug
 
 - name: Configure nginx
   template: src=nginx.conf.j2 dest=/etc/nginx/sites-available/default
   notify:
-    - restart php5-fpm
+    - restart php-fpm
     - restart nginx      
 
-- name: ensure php5-fpm cgi.fix_pathinfo=0
-  lineinfile: dest=/etc/php5/fpm/php.ini regexp='^(.*)cgi.fix_pathinfo=' line=cgi.fix_pathinfo=0
+- name: ensure php-fpm cgi.fix_pathinfo=0
+  lineinfile: dest=/etc/php/{{php_version}}/fpm/php.ini regexp='^(.*)cgi.fix_pathinfo=' line=cgi.fix_pathinfo=0
   notify:
-    - restart php5-fpm
+    - restart php-fpm
     - restart nginx
 
-- name: enable php5 mcrypt module
-  shell: php5enmod mcrypt
+- name: enable php mcrypt module
+  shell: phpenmod mcrypt
   args:
-    creates: /etc/php5/cli/conf.d/20-mcrypt.ini
-
-# checkout project
-- name: create /var/www/ directory
-  file: dest=/var/www/ state=directory owner=www-data group=www-data mode=0700
-
-- name: Clone git repository
-  git: >
-    dest={{project_dir}}
-    repo={{repo_url}}
-    update=no
-    version={{ repo_version }}
-  become: yes
-  become_user: www-data
-  register: cloned
-
-- name: chown /var/www
-  command: "{{ item }}"
-  with_items:
-    - chown -R {{user}}:www-data /var/www
-    - find /var/www/ -type d -exec chmod 775 {} +
-    - find /var/www/ -type f -exec chmod 664 {} +
-
+    creates: /etc/php/cli/conf.d/20-mcrypt.ini
 
 # composer
 - name: install composer
   shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
   args:
     creates: /usr/local/bin/composer
-
-# - name: add composer config dir for github oauth
-#   command: mkdir -p "{{user_dir}}/.config/composer"
-#   become: yes
-#   become_user: "{{user}}"
-
-# - name: add auth.json file
-#   template: src=github-oauth.json.j2 dest="{{user_dir}}/.config/composer/auth.json" owner="{{user}}"
-#   become: yes
-#   become_user: "{{user}}"
-
-- name: composer create-project
-  composer: command=create-project working_dir="{{project_dir}}" optimize_autoloader=no
-  become: yes
-  become_user: "{{user}}"
-  when: cloned|changed
-
-- name: copy .env file
-  template: src=.env.j2 dest={{project_dir}}/.env force=yes
-
-- debug: var=project_dir    
-
-# artisan migrate
-- name: artisan migrate
-  shell: php "{{project_dir}}/artisan" migrate --force
-  become: yes
-  become_user: "{{user}}"
-  args:
-    chdir: "{{project_dir}}"  
-

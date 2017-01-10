@@ -9,8 +9,8 @@
 - name: copy gitconfig script
   template: src=.gitconfig.j2 dest="{{user_dir}}/.gitconfig" owner="{{user}}" mode=0644
 
-- name: copy git-completion script
-  template: src=.git-completion.bash dest="{{user_dir}}/.git-completion.bash" owner="{{user}}" mode=0644  
+# - name: copy git-completion script
+#   template: src=.git-completion.bash dest="{{user_dir}}/.git-completion.bash" owner="{{user}}" mode=0644  
 
 - name: copy .bash_profile script
   template: src=.bash_profile.j2 dest="{{user_dir}}/.bash_profile" owner="{{user}}" mode=0644    

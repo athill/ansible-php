@@ -27,7 +27,7 @@
 - name: Configure nginx
   template: src=nginx.conf.j2 dest=/etc/nginx/sites-available/default
   notify:
-    - restart php5-fpm
+    - restart php-fpm
 
 - name: start nginx
   service: name=nginx state=started
@@ -38,3 +38,6 @@
 - name: Install renewal cron
   cron: name="Let's Encrypt Renewal" day=1 hour=2 minute=30 
         job="/usr/local/sbin/le-renew-webroot >> /var/log/le-renewal.log"
+
+- name: install check script
+  template: src=letsencrypt-check dest=/usr/local/sbin/letsencrypt-check mode=0700

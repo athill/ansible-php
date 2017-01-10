@@ -21,7 +21,7 @@
   register: swapfile
 
 - name: allocate swap
-  command: fallocate -l 1G /swapfile creates=/swapfile
+  command: fallocate -l 2G /swapfile creates=/swapfile
 
 - name: mkswap
   command: mkswap /swapfile
