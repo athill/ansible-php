@@ -1,0 +1,37 @@
+---
+## informedelectorate
+# checkout project
+
+- name: Clone git repository
+  git: >
+    dest={{informed_project_dir}}
+    repo={{informed_repo_url}}
+    update=no
+    version={{ repo_version }}
+  become: yes
+  become_user: www-data
+  register: cloned
+
+- name: chown /var/www
+  command: "{{ item }}"
+  with_items:
+    - chown -R {{user}}:www-data {{ informed_project_dir }}
+    - find {{ informed_project_dir }} -type d -exec chmod 775 {} +
+    - find {{ informed_project_dir }} -type f -exec chmod 664 {} +
+
+- name: Configure nginx
+  template: src=nginx.conf.j2 dest=/etc/nginx/sites-available/{{ informed_host }}
+  notify:
+    - restart php-fpm
+    - restart nginx    
+
+- name: composer create-project
+  composer: 
+    command: install 
+    working_dir: "{{informed_project_dir}}" 
+    # optimize_autoloader=no
+  become: yes
+  become_user: "{{user}}"
+  # when: cloned|changed
+
+

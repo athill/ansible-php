@@ -1,8 +1,6 @@
 ---
 ## wimf
 # checkout project
-- name: create /var/www/ directory
-  file: dest=/var/www/ state=directory owner=www-data group=www-data mode=0775
 
 - name: Clone git repository
   git: >
@@ -14,12 +12,18 @@
   become_user: www-data
   register: cloned
 
-- name: chown /var/www
+- name: chown {{ project_dir }}
   command: "{{ item }}"
   with_items:
-    - chown -R {{user}}:www-data /var/www
-    - find /var/www/ -type d -exec chmod 775 {} +
-    - find /var/www/ -type f -exec chmod 664 {} +
+    - chown -R {{user}}:www-data {{ project_dir }}
+    - find {{ project_dir }} -type d -exec chmod 775 {} +
+    - find {{ project_dir }} -type f -exec chmod 664 {} +
+
+- name: Configure nginx
+  template: src=nginx.conf.j2 dest=/etc/nginx/sites-available/{{ host }}
+  notify:
+    - restart php-fpm
+    - restart nginx
 
 # - name: add composer config dir for github oauth
 #   command: mkdir -p "{{user_dir}}/.config/composer"
