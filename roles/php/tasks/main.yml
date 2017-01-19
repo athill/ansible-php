@@ -17,6 +17,13 @@
     - php{{php_version}}-xml
     - php-xdebug
 
+# nginx (move to its own role)
+- name: uncomment server_names_hash_bucket_size  in nginx.conf
+  replace:
+    path: /etc/nginx/nginx.conf
+    regexp: '^\s*#(\s*server_names_hash_bucket_size.*)$'
+    replace: '\1'    
+
 # create web directory
 - name: create {{ web_dir }} directory
   file: dest={{ web_dir }} state=directory owner=www-data group=www-data mode=0775    

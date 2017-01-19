@@ -25,6 +25,12 @@
     - restart php-fpm
     - restart nginx
 
+- name: create symbolic link for nginx
+  file:
+    src: /etc/nginx/sites-available/{{ host }}
+    dest: /etc/nginx/sites-available/
+    state: link
+
 # - name: add composer config dir for github oauth
 #   command: mkdir -p "{{user_dir}}/.config/composer"
 #   become: yes

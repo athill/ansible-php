@@ -25,6 +25,12 @@
     - restart php-fpm
     - restart nginx    
 
+- name: create symbolic link for nginx
+  file:
+    src: /etc/nginx/sites-available/{{ informed_host }}
+    dest: /etc/nginx/sites-available/
+    state: link
+
 - name: composer create-project
   composer: 
     command: install 
