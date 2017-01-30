@@ -19,6 +19,35 @@
     - find {{ project_dir }} -type d -exec chmod 775 {} +
     - find {{ project_dir }} -type f -exec chmod 664 {} +
 
+### ssl
+- name: copy ini file
+  template: src=le-renew.ini.j2 dest=/usr/local/etc/le-renew-{{ host }}.ini
+
+- name: stop nginx
+  service: name=nginx state=stopped
+
+- name: run letsencrypt
+  shell: ./letsencrypt-auto certonly --standalone --agree-tos --config /usr/local/etc/le-renew-{{ host }}.ini
+  args: 
+    chdir: /opt/letsencrypt
+    creates: /etc/letsencrypt/live/{{host}}/fullchain.pem
+
+- name: Configure nginx
+  template: src=nginx.conf.j2 dest=/etc/nginx/sites-available/{{ host }}
+  notify:
+    - restart php-fpm
+
+- name: start nginx
+  service: name=nginx state=started
+
+- name: copy renewal script
+  template: src=le-renew.j2 dest=/usr/local/sbin/le-renew-{{ host }} mode=0700
+
+- name: Install renewal cron
+  cron: name="Let's Encrypt Renewal {{ host}}" day=1 hour=2 minute=30 
+        job="/usr/local/sbin/le-renew-{{ host }} >> /var/log/le-renewal.log"     
+
+### nginx
 - name: Configure nginx
   template: src=nginx.conf.j2 dest=/etc/nginx/sites-available/{{ host }}
   notify:
@@ -42,6 +71,7 @@
 #   become: yes
 #   become_user: "{{user}}"
 
+### composer
 - name: composer create-project
   composer: 
     command: install 
@@ -51,6 +81,7 @@
   become_user: "{{user}}"
   # when: cloned|changed
 
+### .env
 - name: copy .env file
   template: src=.env.j2 dest={{project_dir}}/.env force=yes
 
@@ -96,4 +127,6 @@
   become_user: "{{user}}"
   args:
     chdir: "{{project_dir}}"
+
+   
 

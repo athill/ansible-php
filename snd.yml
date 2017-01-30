@@ -11,8 +11,9 @@
     - mysql
     - php
     - node
+    - letsencrypt    
     - wimf    
     - informed
     - home    
-    # - letsencrypt
+    
     # - headless-browser

@@ -12,32 +12,33 @@
     update=no
   register: cloned
 
-- name: copy ini file
-  template: src=le-renew-webroot.ini.j2 dest=/usr/local/etc/le-renew-webroot.ini
+# - name: copy ini file
+#   template: src=le-renew-webroot.ini.j2 dest=/usr/local/etc/le-renew-webroot.ini
 
-- name: stop nginx
-  service: name=nginx state=stopped
+# - name: stop nginx
+#   service: name=nginx state=stopped
 
-- name: run letsencrypt
-  shell: ./letsencrypt-auto certonly --standalone --agree-tos --config /usr/local/etc/le-renew-webroot.ini
-  args: 
-    chdir: /opt/letsencrypt
-    creates: /etc/letsencrypt/live/{{host}}/fullchain.pem
+# - name: run letsencrypt
+#   shell: ./letsencrypt-auto certonly --standalone --agree-tos --config /usr/local/etc/le-renew-webroot.ini
+#   args: 
+#     chdir: /opt/letsencrypt
+#     creates: /etc/letsencrypt/live/{{host}}/fullchain.pem
 
-- name: Configure nginx
-  template: src=nginx.conf.j2 dest=/etc/nginx/sites-available/default
-  notify:
-    - restart php-fpm
+# - name: Configure nginx
+#   template: src=nginx.conf.j2 dest=/etc/nginx/sites-available/default
+#   notify:
+#     - restart php-fpm
 
-- name: start nginx
-  service: name=nginx state=started
+# - name: start nginx
+#   service: name=nginx state=started
 
-- name: copy renewal script
-  template: src=le-renew-webroot dest=/usr/local/sbin/le-renew-webroot mode=0700
+# - name: copy renewal script
+#   template: src=le-renew-webroot dest=/usr/local/sbin/le-renew-webroot mode=0700
 
-- name: Install renewal cron
-  cron: name="Let's Encrypt Renewal" day=1 hour=2 minute=30 
-        job="/usr/local/sbin/le-renew-webroot >> /var/log/le-renewal.log"
+# - name: Install renewal cron
+#   cron: name="Let's Encrypt Renewal" day=1 hour=2 minute=30 
+#         job="/usr/local/sbin/le-renew-webroot >> /var/log/le-renewal.log"
 
-- name: install check script
-  template: src=letsencrypt-check dest=/usr/local/sbin/letsencrypt-check mode=0700
+## check script never implemented?
+# - name: install check script
+#   template: src=letsencrypt-check dest=/usr/local/sbin/letsencrypt-check mode=0700
