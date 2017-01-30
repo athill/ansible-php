@@ -28,8 +28,9 @@
 - name: create symbolic link for nginx
   file:
     src: /etc/nginx/sites-available/{{ host }}
-    dest: /etc/nginx/sites-available/
+    dest: /etc/nginx/sites-enabled/{{ host }}
     state: link
+    force: true 
 
 # - name: add composer config dir for github oauth
 #   command: mkdir -p "{{user_dir}}/.config/composer"

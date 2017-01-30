@@ -1,8 +1,8 @@
 server {
     listen 80;
-    listen [::]:80 ipv6only=on;
+    listen [::]:80;
 
-    root {{project_dir}}/public;
+    root {{informed_project_dir}}/public;
     index index.php index.html index.htm;
 
     server_name {{ informed_host }};
@@ -11,7 +11,7 @@ server {
     error_page 404 /404.html;
     error_page 500 502 503 504 /50x.html;
     location = /50x.html {
-        root {{project_dir}};
+        root {{ informed_project_dir }};
     }
 
     location / {

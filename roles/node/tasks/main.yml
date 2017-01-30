@@ -11,6 +11,7 @@
     with_items:
     - npm cache clean -f
     - npm install -g n 
-    - npm install -g gulp
+    - npm install -g gulp-cli
     - npm install -g webpack
-    - n stable 
+    - npm install -g bower
+    - n lts

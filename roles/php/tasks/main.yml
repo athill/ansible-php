@@ -6,23 +6,31 @@
   with_items:
     - mcrypt
     - nginx
+    - zip
+    - unzip
     - php{{php_version}}-cli
     - php{{php_version}}-curl
     - php{{php_version}}-fpm
     - php{{php_version}}-intl
     - php{{php_version}}-json
+    - php{{php_version}}-mbstring    
     - php{{php_version}}-mcrypt
-    - php{{php_version}}-mbstring
     - php{{php_version}}-mysql
     - php{{php_version}}-xml
+    - php{{php_version}}-zip
     - php-xdebug
 
 # nginx (move to its own role)
 - name: uncomment server_names_hash_bucket_size  in nginx.conf
   replace:
-    path: /etc/nginx/nginx.conf
+    destfile: /etc/nginx/nginx.conf
     regexp: '^\s*#(\s*server_names_hash_bucket_size.*)$'
     replace: '\1'    
+
+- name: delete sites-enabled/default
+  file: 
+      path: /etc/nginx/sites-enabled/default
+      state: absent
 
 # create web directory
 - name: create {{ web_dir }} directory

@@ -21,15 +21,15 @@
 
 - name: Configure nginx
   template: src=nginx.conf.j2 dest=/etc/nginx/sites-available/{{ informed_host }}
-  notify:
-    - restart php-fpm
-    - restart nginx    
 
 - name: create symbolic link for nginx
   file:
     src: /etc/nginx/sites-available/{{ informed_host }}
-    dest: /etc/nginx/sites-available/
+    dest: /etc/nginx/sites-enabled/{{ informed_host }}
     state: link
+  notify:
+    - restart php-fpm
+    - restart nginx        
 
 - name: composer create-project
   composer: 
@@ -39,5 +39,24 @@
   become: yes
   become_user: "{{user}}"
   # when: cloned|changed
+
+- name: copy .env file
+  template: src=.env.j2 dest={{informed_project_dir}}/.env force=yes  
+
+- name: run npm install
+  shell: npm install
+  become: yes
+  become_user: "{{user}}"
+  args:
+    chdir: "{{informed_project_dir}}"  
+
+- name: gulp
+  command: "{{ item }}"
+  with_items:
+      - gulp
+  become: yes
+  become_user: "{{user}}"
+  args:
+    chdir: "{{informed_project_dir}}"      
 
 
