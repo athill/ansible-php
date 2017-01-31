@@ -16,5 +16,6 @@
     - wimf    
     - informed
     - home    
+    - logrotate
     
     # - headless-browser

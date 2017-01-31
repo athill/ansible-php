@@ -1,0 +1,30 @@
+{{ backup_dir }}/daily/db.sql.gz {
+  daily
+  rotate 8
+  nocompress
+  create 640 athill root
+  postrotate
+  mysqldump -u root -p{{ db_root_password }} --databases wimf > {{ backup_dir }}/daily/db.sql --single-transaction
+  gzip -9f {{ backup_dir }}/daily/db.sql
+  endscript
+}
+{{ backup_dir }}/weekly/db.sql.gz {
+  weekly
+  rotate 8
+  nocompress
+  create 640 athill root
+  postrotate
+  mysqldump -u root -p{{ db_root_password }} --databases wimf > {{ backup_dir }}/weekly/db.sql --single-transaction
+  gzip -9f {{ backup_dir }}/weekly/db.sql
+  endscript
+}
+{{ backup_dir }}/monthly/db.sql.gz {
+  monthly
+  rotate 8
+  nocompress
+  create 640 athill root
+  postrotate
+  mysqldump -u root -p{{ db_root_password }} --all-databases > {{ backup_dir }}/monthly/db.sql --single-transaction
+  gzip -9f /home/athill/backups/monthly/db.sql
+  endscript
+}
