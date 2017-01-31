@@ -1,0 +1,29 @@
+---
+# nginx
+- name: install nginx
+  apt: name={{ item }} update_cache=yes state=latest force=yes
+  with_items:
+    - nginx
+
+- name: uncomment server_names_hash_bucket_size  in nginx.conf
+  replace:
+    destfile: /etc/nginx/nginx.conf
+    regexp: '^\s*#(\s*server_names_hash_bucket_size.*)$'
+    replace: '\1'    
+
+- name: delete sites-enabled/default
+  file: 
+      path: /etc/nginx/sites-enabled/default
+      state: absent
+  notify:
+    - restart nginx
+
+# create web directory
+- name: create {{ web_dir }} directory
+  file: dest={{ web_dir }} state=directory owner=www-data group=www-data mode=0775    
+
+- name: chown/chmod {{ web_dir }}
+  command: "{{ item }}"
+  with_items:
+    - chown {{user}}:www-data {{ web_dir }}
+    - chmod 775 {{ web_dir }}
