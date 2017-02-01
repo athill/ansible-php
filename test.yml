@@ -1,13 +1,19 @@
 ---
 - hosts: test
+  gather_facts: no
+  pre_tasks:
+    - raw: sudo apt-get -y install python-simplejson
   become: yes
   become_method: sudo
 
   roles:
     - common
     - mysql
+    - nginx
     - php
     - node
-    - home
-    - letsencrypt
-    - headless-browser
+    - letsencrypt    
+    - wimf    
+    - informed
+    - home    
+    - logrotate
