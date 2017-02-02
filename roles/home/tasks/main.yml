@@ -6,6 +6,9 @@
 - name: copy deploy script
   template: src=deploy.j2 dest="{{user_dir}}/bin/deploy" owner="{{user}}" mode=0700 
 
+- name: copy deploy_informed script
+  template: src=deploy_informed.j2 dest="{{user_dir}}/bin/deploy_informed" owner="{{user}}" mode=0700   
+
 - name: copy gitconfig script
   template: src=.gitconfig.j2 dest="{{user_dir}}/.gitconfig" owner="{{user}}" mode=0644
 

@@ -1,0 +1,21 @@
+# cd to project dir
+cd {{ informed_project_dir }}
+
+# checkout branch
+git checkout {{ repo_version }}
+git pull
+
+# update composer
+composer update
+
+# artisan migrations
+php artisan migrate
+
+# set up npm
+n lts
+
+# update npm
+npm install
+
+# run gulp
+gulp 
