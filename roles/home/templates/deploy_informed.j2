@@ -11,11 +11,17 @@ composer update
 # artisan migrations
 php artisan migrate
 
+# clear caches
+php artisan cache:clear
+php artisan view:clear
+
+php artisan cache:config
+
 # set up npm
-n lts
+# n lts
 
 # update npm
 npm install
 
-# run gulp
-gulp 
+# run laravel mix
+npm run {{ app_env == 'production' | ternary('production', 'dev')  }}

@@ -80,10 +80,10 @@
   args:
     chdir: "{{informed_project_dir}}"  
 
-- name: gulp
+- name: laravel-mix
   command: "{{ item }}"
   with_items:
-      - gulp
+      - npm run {{ app_env == 'production' | ternary('production', 'dev')  }}
   become: yes
   become_user: "{{user}}"
   args:
