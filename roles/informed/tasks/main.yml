@@ -83,7 +83,7 @@
 - name: laravel-mix
   command: "{{ item }}"
   with_items:
-      - npm run {{ app_env == 'production' | ternary('production', 'dev')  }}
+      - npm run "{{ (app_env == 'production') | ternary('production', 'dev')  }}"
   become: yes
   become_user: "{{user}}"
   args:
