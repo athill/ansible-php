@@ -5,6 +5,10 @@ cd {{ project_dir }}
 git checkout {{ repo_version }}
 git pull
 
+# remove dependicies
+rm -rf node_modules
+rm -rf vendor
+
 # update composer
 composer update
 
@@ -15,8 +19,8 @@ php artisan migrate
 php artisan cache:clear
 php artisan view:clear
 
-# set up npm
-n use stable
+# cache any config values
+php artisan cache:config
 
 # update npm
 npm install
