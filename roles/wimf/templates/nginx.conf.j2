@@ -13,9 +13,9 @@ server {
     root {{project_dir}}/public;
     index index.php index.html index.htm;
 
-    server_name {{ host }};
+    # server_name {{ host }};
 
-    # server_name {{host}} www.{{host}};
+    server_name {{host}} www.{{host}};
 
     ssl_certificate /etc/letsencrypt/live/{{host}}/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/{{host}}/privkey.pem;
