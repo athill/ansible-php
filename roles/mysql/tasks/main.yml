@@ -1,10 +1,5 @@
 ---
 
-- name: add mysql repo
-  apt_repository:
-    repo: 'deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-5.7'
-    state: present
-
 - name: Set MySQL root password before installing
   debconf: name='mysql-server' question='mysql-server/root_password' value='{{ db_root_password | quote}}' vtype='password'
 
