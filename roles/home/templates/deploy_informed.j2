@@ -5,6 +5,10 @@ cd {{ informed_project_dir }}
 git checkout {{ repo_version }}
 git pull
 
+# remove dependicies
+rm -rf node_modules
+rm -rf vendor
+
 # update composer
 composer update
 
