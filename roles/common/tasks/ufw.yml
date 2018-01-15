@@ -1,0 +1,22 @@
+- name: install packages
+  apt: name={{ item }} update_cache=yes state=latest force=yes
+  with_items:
+  - module-init-tools
+  - ufw
+  become: true
+
+- name: Enable UFW
+  ufw: direction=incoming policy=deny state=enabled
+  become: true
+
+- name: UFW limit SSH
+  ufw: rule=limit port=ssh
+  become: true
+
+- name: UFW open HTTP
+  ufw: rule=allow port=http
+  become: true
+
+- name: UFW open HTTPS
+  ufw: rule=allow port=https
+  become: true

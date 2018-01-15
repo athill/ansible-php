@@ -24,7 +24,6 @@
   lineinfile: dest=/etc/php/{{php_version}}/fpm/php.ini regexp='^(.*)cgi.fix_pathinfo=' line=cgi.fix_pathinfo=0
   notify:
     - restart php-fpm
-    - restart nginx
 
 - name: enable php mcrypt module
   shell: phpenmod mcrypt

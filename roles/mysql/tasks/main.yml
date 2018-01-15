@@ -21,8 +21,8 @@
   template: src=.my.cnf.j2 dest=/root/.my.cnf owner=root mode=0600  
 
 
-- name: create application db
-  mysql_db: name="{{ db_database }}" state=present
+# - name: create application db
+#   mysql_db: name="{{ db_database }}" state=present
 
-- name: create application user
-  mysql_user: name="{{ db_user }}" password="{{ db_password }}" priv={{db_database}}.*:ALL state=present
+# - name: create application user
+#   mysql_user: name="{{ db_user }}" password="{{ db_password }}" priv={{db_database}}.*:ALL state=present

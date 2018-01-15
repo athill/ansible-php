@@ -1,58 +1,37 @@
-# ansible-php
+# docker-ansible-starter
 
-Ansible playbooks to set up LEMP server and publish git repo
+A simple setup to run ansible in docker for local development.
 
-## technologies
-- ansible
-- mysql
-- nginx
-- php
-- laravel
-- node
+## Usage
+```bash
+# In project dir
+docker-compose up -d
+```
 
-## roles
-- common: removes root ssh, sets up firewall, creates swap, installs git and ntp
-- mysql: install mysql-5.7, create application database and user
-- php: install and configure php and nginx, clones git repo, runs composer, copies templated .env file, runs artisan migrate
-- node: installs nodejs and npm, runs npm install, webpack, and gulp less
-- home: .gitconfig, .git-completion, .bash_profile, deploy script
-- letsencrypt: Installs SSL cert on nginx server
+This will start two Docker containers. `ansible` has Ansible installed (Dockerfile) and `target` has `openssh-server` installed (Dockerfile-target). `target` also has a user `target` with password `target` and the root user has password `root` (it is recommended to disable root ssh in your Ansible playbook).  There is also an `inventory.txt` file that has `target` in group `local`.
 
-## variables
+You can create your Ansible project in the current directory. A simple example would be:
+```yaml
+---
+# playbook.yml
 
-### app settings
-- app_name: name of app
-- project_dir: root directory of project
-- repo_url: url of git repository
-- app_env: environment in .env
-- app_debug: whether to allow debugging in .env
-- github_oauth_key: github key for composer
-- host: host name
-- repo_version: branch, tag, or sha-1 hash to clone from
+- hosts: local
+  tasks:
+  	ping:
 
-### db settings
-- db_root_password: root password for mysql
-- db_database: app database name
-- db_user: app database user username
-- db_password: app database user password
+``` 
 
+You could then `exec` into the `ansible` machine
+```
+docker-compose exec ansible bash
+```
 
-### mail settings
-- mail_driver: driver in laravel mail config
-- mail_host: host in laravel mail config
-- mail_port: port in laravel mail config
-- mail_username: username in laravel mail config
-- mail_password: password in laravel mail config
-- mail_encryption: encryption in laravel mail config
-- mailgun_domain:  mailgun domain in laravel services config
-- mailgun_secret: mailgun secret in laravel services config
+This will place you in the `/playbooks` directory which is mapped to your project directory. So you could then run:
+```
+ansible-playbook playbook.yml -i inventory.txt -u target -k
+# prompt for password (target)
+```
+and see the results of Ansible's `ping` task.
 
-### user settings
-- user_dir_path: path to user directories (generally /home)
-- user: username of user
-- user_dir: "{{user_dir_path}}/{{user}}"
-- user_email: email for user
-- user_name: name of user
-
-
-
+## More info
+The `docker-compose.yml` and `inventory.txt` files are just starting places. `docker-compose.yml` has ports 80 and 443 open as web develpoment is a common use case.
