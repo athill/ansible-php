@@ -1,4 +1,4 @@
 group_vars
-.vagrant
-hosts
-notes
+host_vars
+ansible.cfg
+*.retry
