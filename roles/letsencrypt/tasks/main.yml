@@ -1,0 +1,15 @@
+---
+- name: Install depends
+  apt: name={{ item }} state=present
+  with_items:
+    - git 
+    - bc
+  become: true
+
+- name: Install lets encrypt
+  git: >
+    dest=/opt/letsencrypt
+    repo=https://github.com/letsencrypt/letsencrypt
+    update=no
+  register: cloned
+  become: true

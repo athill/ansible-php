@@ -14,12 +14,17 @@
     - libmysqlclient-dev
     - mysql-client
 
-- name: ensure mysql is running and starts on boot
-  service: name=mysql state=started enabled=true
+# - name: ensure mysql is running and starts on boot
+#   service: name=mysql state=started enabled=true
 
 - name: copy .my.cnf file with root password credentials
   template: src=.my.cnf.j2 dest=/root/.my.cnf owner=root mode=0600  
 
+- name: ensure mysql is running 
+  command: service mysql start
+
+- name: ensure mysql  starts on boot
+  command: systemctl enable mysql
 
 # - name: create application db
 #   mysql_db: name="{{ db_database }}" state=present

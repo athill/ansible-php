@@ -1,0 +1,5 @@
+---
+# vars file for website
+
+site: "{{ sites[sitename] }}"
+webroot: /var/www

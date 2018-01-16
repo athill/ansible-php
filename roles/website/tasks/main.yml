@@ -1,0 +1,17 @@
+---
+# tasks file for website
+
+- name: show site
+  debug:
+    var: site
+
+- name: Clone git repository
+  git: >
+    dest={{ webroot }}/{{ site.name }}
+    repo={{ site.repo.url }}
+    update=no
+    version={{ site.repo.version }}
+  register: cloned   
+
+- name: change ownership of web dir
+  file: dest={{ webroot }}/{{ site.name }} owner=www-data group=www-data recurse=yes

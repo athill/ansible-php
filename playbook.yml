@@ -2,7 +2,11 @@
 
 - hosts: local
   roles:
-    - common
-    - php
-    - nginx
-    - mysql
+    # - common
+    # - php
+    # - nginx
+    # - mysql
+    # - node
+    # - letsencrypt
+    - role: website
+      sitename: wimf

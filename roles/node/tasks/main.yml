@@ -1,0 +1,16 @@
+---
+
+  - name: install packages
+    apt: name={{ item }} update_cache=yes state=latest force=yes
+    with_items:
+      - nodejs
+      - npm
+
+  # - name: install and configure n and webpack
+  #   command: "{{ item }}"
+  #   with_items:
+  #   - npm cache clean -f
+  #   - npm install -g n 
+  #   - npm install -g webpack
+  #   - n lts
+  #   - n use lts
