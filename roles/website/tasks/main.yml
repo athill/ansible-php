@@ -3,15 +3,19 @@
 
 - name: show site
   debug:
-    var: site
+    var: sites
 
-- name: Clone git repository
-  git: >
-    dest={{ webroot }}/{{ site.name }}
-    repo={{ site.repo.url }}
-    update=no
-    version={{ site.repo.version }}
-  register: cloned   
+- name: show db
+  debug:
+    var: db_root_password    
 
-- name: change ownership of web dir
-  file: dest={{ webroot }}/{{ site.name }} owner=www-data group=www-data recurse=yes
+# - name: Clone git repository
+#   git: >
+#     dest={{ webroot }}/{{ site.name }}
+#     repo={{ site.repo.url }}
+#     update=no
+#     version={{ site.repo.version }}
+#   register: cloned   
+
+# - name: change ownership of web dir
+#   file: dest={{ webroot }}/{{ site.name }} owner=www-data group=www-data recurse=yes
