@@ -1,0 +1,11 @@
+---
+- hosts: snd
+  remote_user: root
+  gather_facts: yes
+  pre_tasks:
+    - raw: apt-get -y install python-minimal python-simplejson
+  become: yes
+
+  roles:
+    - update-apt
+    - common

@@ -1,9 +1,38 @@
 ---
+
+# users
+- name: Change root password
+  user: name=root password="{{ root_password }}"
+
+- name: Add deploy user
+  user: name={{ deploy_user_name }} password="{{ deploy_password }}" shell=/bin/bash
+
+- name: Add authorized keys for deploy user
+  authorized_key: user={{ deploy_user_name }} key="{{ lookup('file', item) }}"
+  with_items: "{{deploy_public_keys}}"
+
+- name: Add deploy user to sudoers
+  lineinfile: dest=/etc/sudoers
+              regexp="{{ deploy_user_name }} ALL"
+              line="{{ deploy_user_name }} ALL=(ALL) ALL"
+              state=present
+
+
 - name: disable root ssh 
   lineinfile: dest=/etc/ssh/sshd_config regexp='^(.*)PermitRootLogin' line='PermitRootLogin no'
   notify:
-  - restart ssh
+  - restart ssh              
 
+# apt
+- name: Install required packages
+  apt: state=present pkg={{ item }}
+  with_items: '{{required_packages}}'
+
+- name: Install optional packages
+  apt: state=present pkg={{ item }}
+  with_items: '{{optional_packages}}'
+
+# firewall
 - name: Enable UFW
   ufw: direction=incoming policy=deny state=enabled
 
@@ -16,6 +45,11 @@
 - name: UFW open HTTPS
   ufw: rule=allow port=https
 
+- name: Allow mosh traffic
+  ufw: rule=allow proto=udp port={{ mosh_from_port }}:{{ mosh_to_port }}
+  when: "'mosh' in optional_packages"  
+
+# swap  
 - name: check if swap exists
   stat: path=/swapfile
   register: swapfile
@@ -39,8 +73,18 @@
   mount: name=none src=/swapfile fstype=swap opts=sw passno=0 dump=0 state=present
   when: swapfile.stat.exists == False
 
-- name: install packages
-  apt: name={{ item }} update_cache=yes state=latest force=yes
+# postfix/email log
+- name: Set up Postfix to relay mail
+  debconf: name=postfix
+           question='{{ item.question }}'
+           value='{{ item.value }}'
+           vtype='{{ item.vtype }}'
   with_items:
-  - git
-  - ntp
+    - { question: 'postfix/mailname', value: '{{ ansible_fqdn }}', vtype: 'string' }
+    - { question: 'postfix/main_mailer_type', value: 'Internet Site', vtype: 'string' }
+
+- name: Email log summary daily
+  lineinfile: dest=/etc/cron.daily/00logwatch
+              regexp="^/usr/sbin/logwatch"
+              line="/usr/sbin/logwatch --output mail --mailto {{ logwatch_email }} --detail high"
+              state=present create=yes

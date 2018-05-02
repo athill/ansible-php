@@ -1,21 +1,39 @@
 ---
 - hosts: snd
-  gather_facts: no
-  pre_tasks:
-    - raw: sudo apt-get -y install python-simplejson
-  become: yes
-  become_method: sudo
+  gather_facts: yes
+  remote_user: deploy
 
   roles:
-    - common
-    - mysql
-    - nginx
-    - php
-    - node
-    - letsencrypt    
-    - wimf    
-    - informed
-    - home    
-    - logrotate
+    - update-apt
+    - mysql 
+    # due to setting files. best to start from fresh install if this fails
+    # - nginx
+    # - php
+    # - node
+    # - letsencrypt
+    ## wimf
+    # - { role: site,
+    #     project_dir: "{{ wimf_project_dir }}",
+    #     repo_url: "{{ wimf_repo_url }}",
+    #     host: "{{ wimf_host }}",
+    #     app_name: "{{ wimf_app_name }}",
+    #     db_database: "{{ wimf_db_database }}",
+    #     db_password: "{{ wimf_db_password }}",
+    #     db_user: "{{ wimf_db_user }}"     
+    #   }
+    ## informed
+    # - { role: site,
+    #     project_dir: "{{ informed_project_dir }}",
+    #     repo_url: "{{ informed_repo_url }}",
+    #     host: "{{ informed_host }}",
+    #     app_name: "{{ informed_app_name }}",
+    #   }      
+    # - include_role:
+    #     name: site
+    #   vars:
+    #     project_dir: "{{ wimf_project_dir"
+    #     repo_url: "{{ wimf_repo_url }}"
+    # - home    
+    # - logrotate
     
     # - headless-browser

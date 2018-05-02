@@ -1,6 +1,4 @@
 ---
-- name: restart php-fpm
-  shell: service php{{php_version}}-fpm restart
-
 - name: restart nginx
-  service: name=nginx state=restarted 
+  service: name=nginx state=restarted
+  become: yes

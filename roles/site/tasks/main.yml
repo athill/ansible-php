@@ -1,0 +1,29 @@
+---
+
+## site
+- name: Set up application directory
+  include: app_dir.yml
+  become: true
+
+- name: Set up let's encrypt
+  include: ssl.yml
+  become: true
+
+- name: Set up nginx
+  include: server.yml
+  become: true
+
+- name: Database
+  include: db.yml
+  become: true
+  when: db_database is defined and db_database
+
+- name: Build
+  include: build.yml
+
+- name: final restarts
+  command: /bin/true
+  become: true
+  notify:
+    - restart php-fpm
+    - restart nginx

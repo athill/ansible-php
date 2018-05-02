@@ -1,0 +1,20 @@
+---
+
+- name: copy ini file
+  template: src=le-renew.ini.j2 dest=/usr/local/etc/le-renew-{{ host }}.ini
+
+- name: create .well-known directory
+  file: path={{ project_dir }}/public/.well-known state=directory mode=0755 owner={{ deploy_user_name }} group=www-data
+
+- name: run letsencrypt
+  shell: ./letsencrypt-auto certonly --standalone --agree-tos --config /usr/local/etc/le-renew-{{ host }}.ini
+  args: 
+    chdir: /opt/letsencrypt
+    creates: /etc/letsencrypt/live/{{host}}/fullchain.pem
+
+- name: copy renewal script
+  template: src=le-renew.j2 dest=/usr/local/sbin/le-renew-{{ host }} mode=0700
+
+- name: Install renewal cron
+  cron: name="Let's Encrypt Renewal {{ host }}" day=1 hour=2 minute=30 
+        job="/usr/local/sbin/le-renew-{{ host }} >> /var/log/le-renewal.log"
