@@ -1,0 +1,14 @@
+---
+- hosts: "{{ hosts }}"
+  gather_facts: yes
+  remote_user: deploy
+
+  roles:
+    - update-apt
+    - mysql
+    - mysql-backup 
+    - nginx
+    - php
+    - letsencrypt
+    - node
+    

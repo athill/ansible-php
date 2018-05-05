@@ -1,5 +1,5 @@
 ---
-- hosts: snd
+- hosts: "{{ hosts }}"
   remote_user: root
   gather_facts: yes
   pre_tasks:
