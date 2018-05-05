@@ -1,0 +1,20 @@
+#!/bin/sh
+
+name=all
+args='--all-databases'
+if [ "$#" -eq 1 ]; then
+	name=$1
+	args="--databases $name"
+fi
+
+filename=$name-$(date +%d%m%y).sql
+backuppath={{ backup_dir }}
+
+cd $backuppath
+
+
+mysqldump -u root -p {{ db_root_password }} $args > $filename
+
+tar -czvf $filename.tgz $filename
+rm $filename
+find -name "$name-*.tgz" -type f -mtime +7 -exec rm -f {} \;

@@ -3,3 +3,4 @@ group_vars
 hosts
 notes
 db.txt
+*.retry

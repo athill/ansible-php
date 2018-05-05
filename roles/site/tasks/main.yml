@@ -1,21 +1,26 @@
 ---
 
 ## site
+- name: Install deploy script for {{ host }}
+  template: 
+    src: deploy.j2
+    dest: "/home/{{ deploy_user_name }}/bin/deploy_{{ app_name }}"
+    mode: 0700
+
 - name: Set up application directory
   include: app_dir.yml
-  become: true
-
-- name: Set up let's encrypt
-  include: ssl.yml
   become: true
 
 - name: Set up nginx
   include: server.yml
   become: true
 
+- name: Set up let's encrypt
+  include: ssl.yml
+  become: true
+
 - name: Database
   include: db.yml
-  become: true
   when: db_database is defined and db_database
 
 - name: Build

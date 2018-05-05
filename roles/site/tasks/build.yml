@@ -11,22 +11,27 @@
 
 
 # composer
-- name: composer install
+- name: "{{ host }} composer install"
   composer: 
     command: install 
     working_dir: "{{ project_dir }}" 
 #  when: cloned|changed
 
 ## node
-- name: set NODE_ENV
+- name: "{{ host }} set NODE_ENV"
   shell: export NODE_ENV={{ app_env }}
 
-- name: npm install
+- name: "{{ host }} remove node_modules"
+  file:
+    state: absent
+    path: "{{ project_dir }}/node_modules"
+
+- name: "{{ host }} npm install"
   shell: npm install
   args:
     chdir: "{{ project_dir }}"
 
-- name: npm build
+- name: "{{ host }} npm build"
   command: "{{ item }}"
   with_items:
     - "{{ node_build_command }}"
@@ -34,12 +39,19 @@
     chdir: "{{ project_dir }}"
 
 ### .env
-- name: copy .env file
+- name: "{{ host }} copy .env file"
   template: src={{ app_name }}.env.j2  dest={{ project_dir }}/.env force=yes
 
 
 # artisan migrate
-- name: artisan migrate
+- name: "{{ host }}  artisan migrate"
   shell: php "{{ project_dir }}/artisan" migrate --force
   args:
     chdir: "{{ project_dir }}" 
+  when: db_database is defined and db_database
+
+- name: Install artisan scheduler cron for {{ host }} 
+  cron: 
+    name: "Run scheduler for {{ app_name }}"  
+    job: "php {{ project_dir }}/artisan schedule:run >> /dev/null 2>&1"
+

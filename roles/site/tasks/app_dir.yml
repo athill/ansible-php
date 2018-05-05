@@ -1,6 +1,6 @@
 ---
 
-- name: Clone git repository
+- name: Clone {{ host }} git repository
   git: >
     dest={{ project_dir }}
     repo={{ repo_url }}

@@ -1,0 +1,30 @@
+---
+
+- name: Creates backup all directory
+  file: 
+    path: '{{ backup_dir }}' 
+    state: directory 
+    mode: 0775 
+    recurse: yes
+
+- name: Creates bin directory
+  file: 
+    path: '/home/{{ deploy_user_name }}/bin' 
+    state: directory 
+    mode: 0755 
+    recurse: yes  
+
+- name: copy mysql-backup file with root password credentials
+  template: 
+    src: mysql-backup.sh.j2 
+    dest: '/home/{{ deploy_user_name }}/bin/mysql-backup' 
+    mode: 0700  
+
+- name: Creates bin directory
+  file: path='/home/{{ deploy_user_name }}/log' state=directory owner={{ deploy_user_name }} mode=0755 recurse=yes  
+
+- name: Install backup cron
+  cron: name="Backup all databases" day=1 hour=1 minute=30 
+        job="/home/{{ deploy_user_name }}/bin/mysql-backup >> /home/{{ deploy_user_name }}/log/all-backup.log"
+
+

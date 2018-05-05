@@ -1,5 +1,6 @@
 ---
-# nginx
+
+### nginx
 - name: install nginx
   apt: name={{ item }} update_cache=yes state=latest force=yes
   with_items:
@@ -21,14 +22,11 @@
     - restart nginx
   become: yes
 
-# create web directory
-- name: create {{ web_dir }} directory
-  file: dest={{ web_dir }} state=directory owner=www-data group=www-data mode=0775    
-  become: yes
-
-- name: chown/chmod {{ web_dir }}
-  command: "{{ item }}"
-  with_items:
-    - chown {{ deploy_user_name }}:www-data {{ web_dir }}
-    - chmod 775 {{ web_dir }}
+- name: chmod/chown {{ web_dir }}
+  file: 
+    path: "{{ web_dir }}"
+    owner: "{{ deploy_user_name }}"
+    group: www-data
+    mode: 0775
+    state: directory
   become: yes
