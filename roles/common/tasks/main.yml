@@ -86,5 +86,5 @@
 - name: Email log summary daily
   lineinfile: dest=/etc/cron.daily/00logwatch
               regexp="^/usr/sbin/logwatch"
-              line="/usr/sbin/logwatch --output mail --mailto {{ logwatch_email }} --detail high"
+              line="/usr/sbin/logwatch --output mail --mailto {{ report_email }} --detail high"
               state=present create=yes

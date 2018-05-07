@@ -4,55 +4,39 @@ Ansible playbooks to set up LEMP server and publish git repo
 
 ## technologies
 - ansible
+- letsencrypt
 - mysql
 - nginx
 - php
 - laravel
 - node
 
-## roles
-- common: removes root ssh, sets up firewall, creates swap, installs git and ntp
-- mysql: install mysql-5.7, create application database and user
-- php: install and configure php and nginx, clones git repo, runs composer, copies templated .env file, runs artisan migrate
-- node: installs nodejs and npm, runs npm install, webpack, and gulp less
-- home: .gitconfig, .git-completion, .bash_profile, deploy script
-- letsencrypt: Installs SSL cert on nginx server
+## playbooks
+- setup.yml: runs as root, sets up deploy user, disables root ssh, sets up firewall, etc.
+- packages.yml: runs as deploy, installs and configures letsencrypt, mysql, nginx, nodejs, php, etc.
+- sites.yml: runs as deploy, deploys web sites and installs script to deploy websites
 
 ## variables
-
-### app settings
-- app_name: name of app
-- project_dir: root directory of project
-- repo_url: url of git repository
-- app_env: environment in .env
-- app_debug: whether to allow debugging in .env
-- github_oauth_key: github key for composer
-- host: host name
-- repo_version: branch, tag, or sha-1 hash to clone from
-
-### db settings
-- db_root_password: root password for mysql
-- db_database: app database name
-- db_user: app database user username
-- db_password: app database user password
-
-
-### mail settings
-- mail_driver: driver in laravel mail config
-- mail_host: host in laravel mail config
-- mail_port: port in laravel mail config
-- mail_username: username in laravel mail config
-- mail_password: password in laravel mail config
-- mail_encryption: encryption in laravel mail config
-- mailgun_domain:  mailgun domain in laravel services config
-- mailgun_secret: mailgun secret in laravel services config
-
-### user settings
-- user_dir_path: path to user directories (generally /home)
-- user: username of user
-- user_dir: "{{user_dir_path}}/{{user}}"
-- user_email: email for user
-- user_name: name of user
+| variable | description |
+|----------|-------------|
+|app_debug| used in laravel .env files to turn debugging on and off |
+|app_env| used in laravel .env files to set the application environment, e.g., develop, production |
+|backup_dir| root directory for mysql backups |
+|db_root_password| password for mysql root user |
+|deploy_password| password for deploy user |
+|deploy_public_keys| list of paths of public keys to allow ssh access for deploy user |
+|deploy_user_name| username for deploy user |
+|mosh_from_port| from port for mosh ssh client |
+|mosh_to_port| to port for mob ssh client |
+|node_build_command| build command for npm, e.g., `npm run develop` |
+|node_version| version of nodejs to install e.g., v10.0.0 |
+|optional_packages| Packages that can be overriden by host/group. I got this from https://ryaneschinger.com/blog/securing-a-server-with-ansible/ |
+|php_version| version of php to install (e.g., `7.2`) |
+|report_email| email to send reports to |
+|repo_version| branch, tag, etc. of code repository |
+|required_packages| Packages that will be installed on every server |
+|root_password| password for root user on machine |
+|web_dir| root for websites, e.g., `/var/www` |
 
 
 
