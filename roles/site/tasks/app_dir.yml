@@ -1,0 +1,16 @@
+---
+
+- name: Clone {{ host }} git repository
+  git: >
+    dest={{ project_dir }}
+    repo={{ repo_url }}
+    update=no
+    version={{ repo_version }}
+  register: cloned
+
+- name: chown {{ project_dir }}
+  command: "{{ item }}"
+  with_items:
+    - chown -R {{ deploy_user_name }}:www-data {{ project_dir }}
+    - find {{ project_dir }} -type d -exec chmod 775 {} +
+    - find {{ project_dir }} -type f -exec chmod 664 {} +

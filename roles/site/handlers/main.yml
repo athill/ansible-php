@@ -1,8 +1,8 @@
 ---
 - name: restart php-fpm
-  shell: service php{{php_version}}-fpm restart
-  become: true
+  service: name=php{{ php_version }}-fpm state=restarted
+  become: yes
 
 - name: restart nginx
   service: name=nginx state=restarted 
-  become: true
+  become: yes

@@ -1,5 +1,12 @@
 ---
 # php, nginx, composer
+
+# - name: install repository
+#   apt_repository:
+#     repo: ppa:ondrej/php
+#     state: present
+#   become: yes
+
 # PHP
 - name: install php packages
   apt: name={{ item }} update_cache=yes state=latest force=yes
@@ -12,12 +19,12 @@
     - php{{php_version}}-fpm
     - php{{php_version}}-intl
     - php{{php_version}}-json
-    - php{{php_version}}-mbstring    
-    - php{{php_version}}-mcrypt
+    - php{{php_version}}-mbstring
     - php{{php_version}}-mysql
     - php{{php_version}}-xml
     - php{{php_version}}-zip
     - php-xdebug
+  become: yes
 
 
 - name: ensure php-fpm cgi.fix_pathinfo=0
@@ -25,14 +32,17 @@
   notify:
     - restart php-fpm
     - restart nginx
+  become: yes
 
 - name: enable php mcrypt module
   shell: phpenmod mcrypt
   args:
     creates: /etc/php/cli/conf.d/20-mcrypt.ini
+  become: yes
 
 # composer
 - name: install composer
   shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
   args:
     creates: /usr/local/bin/composer
+  become: yes

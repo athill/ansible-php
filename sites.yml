@@ -1,0 +1,23 @@
+---
+- hosts: "{{ hosts }}"
+  gather_facts: yes
+  remote_user: deploy
+
+  roles:
+    ## wimf
+    - { role: site,
+        project_dir: "{{ wimf_project_dir }}",
+        repo_url: "{{ wimf_repo_url }}",
+        host: "{{ wimf_host }}",
+        app_name: "{{ wimf_app_name }}",
+        db_database: "{{ wimf_db_database }}",
+        db_password: "{{ wimf_db_password }}",
+        db_user: "{{ wimf_db_user }}"     
+      }
+    ## informed
+    - { role: site,
+        project_dir: "{{ informed_project_dir }}",
+        repo_url: "{{ informed_repo_url }}",
+        host: "{{ informed_host }}",
+        app_name: "{{ informed_app_name }}",
+      }      

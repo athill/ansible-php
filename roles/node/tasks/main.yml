@@ -1,18 +1,26 @@
 ---
 
-  - name: install packages
-    apt: name={{ item }} update_cache=yes state=latest force=yes
-    with_items:
-      - nodejs
-      - npm
+- name: install packages
+  apt: name={{ item }} update_cache=yes state=latest force=yes
+  with_items:
+    - make
+    - g++
+    - libssl-dev
+  become: yes
 
-  - name: install and configure n, gulp, and webpack
-    command: "{{ item }}"
-    with_items:
-    - npm cache clean -f
-    - npm install -g n 
-    - npm install -g gulp-cli
-    - npm install -g webpack
-    - npm install -g bower
-    - n lts
-    - n use lts
+- name: Extract node into /usr/src
+  unarchive:
+    src: "http://nodejs.org/dist/{{ node_version }}/node-{{ node_version }}.tar.gz"
+    dest: /usr/src
+    remote_src: yes
+  become: yes
+
+- name: install nodejs
+  command: "{{ item }}"
+  with_items: 
+    - sh configure
+    - make
+    - make install
+  become: yes
+  args: 
+    chdir: "/usr/src/node-{{ node_version }}"

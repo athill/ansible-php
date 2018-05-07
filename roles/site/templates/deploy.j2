@@ -1,0 +1,32 @@
+# cd to project dir
+cd {{ project_dir }}
+
+# checkout branch
+git checkout {{ repo_version }}
+git pull
+
+# remove dependicies
+rm -rf node_modules
+rm -rf vendor
+
+# update composer
+composer update
+
+# artisan migrations
+cat .env | grep DATABASE && php artisan migrate
+
+# clear caches
+php artisan clear-compiled
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+
+# cache any config values
+php artisan config:cache
+
+# update npm
+npm install
+
+# webpack
+{{ node_build_command }}

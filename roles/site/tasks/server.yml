@@ -1,0 +1,18 @@
+---
+
+### nginx
+- name: Configure {{ host }} nginx
+  template: src=nginx.conf.j2 dest=/etc/nginx/sites-available/{{ host }}
+
+- name: create {{host }} symbolic link for nginx
+  file:
+    src: /etc/nginx/sites-available/{{ host }}
+    dest: /etc/nginx/sites-enabled/{{ host }}
+    state: link
+    force: true 
+
+- name: restart services
+  command: /bin/true
+  notify:
+    - restart php-fpm
+    - restart nginx
