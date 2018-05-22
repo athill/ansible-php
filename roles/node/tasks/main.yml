@@ -6,6 +6,8 @@
     - make
     - g++
     - libssl-dev
+    - build-essential
+    - libpng-dev
   become: yes
 
 - name: Extract node into /usr/src
