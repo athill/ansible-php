@@ -4,11 +4,11 @@
   remote_user: deploy
 
   roles:
-    - update-apt
-    - mysql
-    - mysql-backup 
-    - nginx
-    - php
-    - letsencrypt
+    # - update-apt
+    # - mysql
+    # - mysql-backup 
+    # - nginx
+    # - php
+    # - letsencrypt
     - node
     

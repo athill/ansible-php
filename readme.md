@@ -16,6 +16,8 @@ Ansible playbooks to set up LEMP server and publish git repo
 - packages.yml: runs as deploy, installs and configures letsencrypt, mysql, nginx, nodejs, php, etc.
 - sites.yml: runs as deploy, deploys web sites and installs script to deploy websites
 
+My architecture is somewhat convoluted or appears to be against the Ansible way. All playbooks expect a `-e 'hosts=<hosts>'` argument. There is a hosts file that has groups for snd, test, and production, and `group_vars` files for each of those groups 
+
 ## variables
 | variable | description |
 |----------|-------------|
