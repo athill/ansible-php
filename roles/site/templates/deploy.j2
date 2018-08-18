@@ -5,15 +5,18 @@ cd {{ project_dir }}
 git checkout {{ repo_version }}
 git pull
 
+# shutting down site
+php artisan down
+
 # remove dependicies
 rm -rf node_modules
 rm -rf vendor
 
 # update composer
-composer update
+composer install --no-interaction --prefer-dist --optimize-autoloader 
 
 # artisan migrations
-cat .env | grep DATABASE && php artisan migrate
+cat .env | grep DATABASE && php artisan migrate --no-interaction --force
 
 # clear caches
 php artisan clear-compiled
@@ -30,3 +33,6 @@ npm install
 
 # webpack
 {{ node_build_command }}
+
+# bringing up site
+php artisan up
