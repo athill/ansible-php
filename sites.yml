@@ -21,10 +21,20 @@
     #     host: "{{ informed_host }}",
     #     app_name: "{{ informed_app_name }}",
     #   }  
-    ## upcfinance
+    # ## upcfinance
+    # - { role: site,
+    #     project_dir: "{{ upcfinance_project_dir }}",
+    #     repo_url: "{{ upcfinance_repo_url }}",
+    #     host: "{{ upcfinance_host }}",
+    #     app_name: "{{ upcfinance_app_name }}",
+    #   }  
+    ## sitecheck
     - { role: site,
-        project_dir: "{{ upcfinance_project_dir }}",
-        repo_url: "{{ upcfinance_repo_url }}",
-        host: "{{ upcfinance_host }}",
-        app_name: "{{ upcfinance_app_name }}",
+        project_dir: "{{ sitecheck_project_dir }}",
+        repo_url: "{{ sitecheck_repo_url }}",
+        host: "{{ sitecheck_host }}",
+        app_name: "{{ sitecheck_app_name }}",
+        db_database: "{{ sitecheck_db_database }}",
+        db_password: "{{ sitecheck_db_password }}",
+        db_user: "{{ sitecheck_db_user }}"             
       }  
