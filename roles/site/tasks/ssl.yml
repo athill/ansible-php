@@ -6,6 +6,9 @@
 - name: stop nginx
   service: name=nginx state=stopped
 
+- name: Configure {{ host }} nginx
+  template: src=nginx-ssl.conf.j2 dest=/etc/nginx/sites-available/{{ host }}  
+
 - name: create {{ host }} .well-known directory
   file: path={{ project_dir }}/public/.well-known state=directory mode=0755 owner={{ deploy_user_name }} group=www-data
 

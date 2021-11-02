@@ -11,6 +11,12 @@ Ansible playbooks to set up LEMP server and publish git repo
 - laravel
 - node
 
+## standard usage
+Values for hosts are `production` and `test`.
+```
+ansible-playbook --ask-become-pass --extra-vars "hosts=production" sites.yml
+```
+
 ## playbooks
 - setup.yml: runs as root, sets up deploy user, disables root ssh, sets up firewall, etc.
 - packages.yml: runs as deploy, installs and configures letsencrypt, mysql, nginx, nodejs, php, etc.

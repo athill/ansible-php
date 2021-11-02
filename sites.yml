@@ -38,3 +38,13 @@
         db_password: "{{ sitecheck_db_password }}",
         db_user: "{{ sitecheck_db_user }}"             
       }  
+    ## pkcar
+    # - { role: site,
+    #     project_dir: "{{ pkcar_project_dir }}",
+    #     repo_url: "{{ pkcar_repo_url }}",
+    #     host: "{{ pkcar_host }}",
+    #     app_name: "{{ pkcar_app_name }}",
+    #     db_database: "{{ pkcar_db_database }}",
+    #     db_password: "{{ pkcar_db_password }}",
+    #     db_user: "{{ pkcar_db_user }}"             
+      }     
