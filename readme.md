@@ -12,6 +12,20 @@ Ansible playbooks to set up LEMP server and publish git repo
 - node
 
 ## standard usage
+
+### set up host
+Values for hosts are `production` and `test`.
+```
+ansible-playbook --ask-become-pass --extra-vars "hosts=production" setup.yml
+```
+
+### install packages
+Values for hosts are `production` and `test`.
+```
+ansible-playbook --ask-become-pass --extra-vars "hosts=production" packages.yml
+```
+
+### set up web sites
 Values for hosts are `production` and `test`.
 ```
 ansible-playbook --ask-become-pass --extra-vars "hosts=production" sites.yml
