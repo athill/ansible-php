@@ -8,10 +8,18 @@
   debconf: name='mysql-server' question='mysql-server/root_password_again' value='{{ db_root_password |quote }}' vtype='password'
   become: yes
 
+- name: install pip3
+  apt: name=python3-pip state=present 
+
+- name: Make sure pymysql is present
+  become: yes
+  pip:
+    name: pymysql
+    state: present
+
 - name: install mysql
   apt: name={{ item }} update_cache=yes state=latest force=yes
   with_items: 
-    - python-mysqldb  
     - mysql-server
     - libmysqlclient-dev
     - mysql-client
@@ -24,12 +32,5 @@
 - name: ensure mysql is running and starts on boot
   service: name=mysql state=started enabled=true
   become: yes
-
-- name: Secures the mysql root user
-  mysql_user: user="root" password="{{ db_root_password }}" host="{{ item }}" login_password="{{db_root_password}}" login_user=root
-  with_items:
-    - 127.0.0.1
-    - localhost
-    - ::1
-    - "{{ ansible_fqdn }}"    
+ 
 

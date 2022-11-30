@@ -1,28 +1,30 @@
 ---
 
-- name: install packages
-  apt: name={{ item }} update_cache=yes state=latest force=yes
+- name: "Add nodejs apt key"
+  apt_key:
+    url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+    state: present
+
+- name: "Add nodejs 16.x ppa for apt repo"
+  apt_repository:
+    repo: deb https://deb.nodesource.com/node_16.x jammy main
+    update_cache: yes
+
+- name: "Install nodejs"
+  apt:
+    update_cache: yes
+    name: nodejs
+    state: present
+
+- name: "Install npm"
+  apt:
+    update_cache: yes
+    name: npm
+    state: present    
+
+- name: "Install NPM-distributed command-line tools"
+  npm:
+    global: yes
+    name: "{{ item }}"
   with_items:
-    - make
-    - g++
-    - libssl-dev
-    - build-essential
-    - libpng-dev
-  become: yes
-
-- name: Extract node into /usr/src
-  unarchive:
-    src: "http://nodejs.org/dist/{{ node_version }}/node-{{ node_version }}.tar.gz"
-    dest: /usr/src
-    remote_src: yes
-  become: yes
-
-- name: install nodejs
-  command: "{{ item }}"
-  with_items: 
-    - sh configure
-    - make
-    - make install
-  become: yes
-  args: 
-    chdir: "/usr/src/node-{{ node_version }}"
+    - pm2        

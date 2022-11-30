@@ -1,11 +1,14 @@
 ---
 
-# users
+- name: Password values
+  ansible.builtin.debug:
+    msg: "root: {{ root_password }}; deploy {{ deploy_password }}"    
+
 - name: Change root password
-  user: name=root password="{{ root_password }}"
+  user: name=root password="{{ root_password|password_hash('sha512')  }}"
 
 - name: Add deploy user
-  user: name={{ deploy_user_name }} password="{{ deploy_password }}" shell=/bin/bash
+  user: name={{ deploy_user_name }} password="{{ deploy_password|password_hash('sha512')  }}" shell=/bin/bash
 
 - name: Add authorized keys for deploy user
   authorized_key: user={{ deploy_user_name }} key="{{ lookup('file', item) }}"
@@ -25,12 +28,10 @@
 
 # apt
 - name: Install required packages
-  apt: state=present pkg={{ item }}
-  with_items: '{{required_packages}}'
+  apt: state=present pkg={{ required_packages }}
 
 - name: Install optional packages
-  apt: state=present pkg={{ item }}
-  with_items: '{{optional_packages}}'
+  apt: state=present pkg={{optional_packages}}
 
 # firewall
 - name: Enable UFW
@@ -44,10 +45,6 @@
 
 - name: UFW open HTTPS
   ufw: rule=allow port=https
-
-- name: Allow mosh traffic
-  ufw: rule=allow proto=udp port={{ mosh_from_port }}:{{ mosh_to_port }}
-  when: "'mosh' in optional_packages"  
 
 # swap  
 - name: check if swap exists

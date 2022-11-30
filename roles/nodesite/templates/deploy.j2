@@ -1,0 +1,15 @@
+# cd to project dir
+cd {{ project_dir }}
+
+# checkout branch
+git checkout {{ repo_version }}
+git pull
+
+# remove dependicies
+rm -rf node_modules
+
+# update npm
+npm install
+
+# webpack
+npm run build

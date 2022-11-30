@@ -10,7 +10,6 @@
 
 - name: chown {{ project_dir }}
   command: "{{ item }}"
-  become: true
   with_items:
     - chown -R {{ deploy_user_name }}:www-data {{ project_dir }}
     - find {{ project_dir }} -type d -exec chmod 775 {} +

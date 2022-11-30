@@ -1,0 +1,14 @@
+---
+
+# database 
+- name: create {{ db_database }} db
+  mysql_db: name="{{ db_database }}" state=present
+  become: true
+
+- name: create {{ db_database }} database user
+  mysql_user: name="{{ db_user }}" password="{{ db_password }}" priv={{ db_database }}.*:ALL state=present
+  become: true
+
+- name: Install backup {{ db_database }} cron
+  cron: name="Backup all databases" hour=2 minute=0 
+        job="/home/{{ deploy_user_name }}/bin/mysql-backup {{ db_database }} >> /home/{{ deploy_user_name }}/log/{{ db_database }}-backup.log"

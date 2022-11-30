@@ -14,21 +14,27 @@ Ansible playbooks to set up LEMP server and publish git repo
 ## standard usage
 
 ### set up host
-Values for hosts are `production` and `test`.
+
+Requires `sshpass` to be installed
 ```
-ansible-playbook --ask-become-pass --extra-vars "hosts=production" setup.yml
+brew install hudochenkov/sshpass/sshpass
+```
+
+Values for hosts are listed in `./hosts`.
+```
+ansible-playbook --ask-pass --extra-vars "hosts=<hosts>" setup.yml
 ```
 
 ### install packages
-Values for hosts are `production` and `test`.
+Values for hosts are listed in `./hosts`.
 ```
-ansible-playbook --ask-become-pass --extra-vars "hosts=production" packages.yml
+ansible-playbook --ask-become-pass --extra-vars "hosts=<hosts>" packages.yml
 ```
 
 ### set up web sites
-Values for hosts are `production` and `test`.
+Values for hosts are listed in `./hosts`.
 ```
-ansible-playbook --ask-become-pass --extra-vars "hosts=production" sites.yml
+ansible-playbook --ask-become-pass --extra-vars "hosts=<hosts>" sites.yml
 ```
 
 ## playbooks
@@ -48,8 +54,7 @@ My architecture is somewhat convoluted or appears to be against the Ansible way.
 |deploy_password| password for deploy user |
 |deploy_public_keys| list of paths of public keys to allow ssh access for deploy user |
 |deploy_user_name| username for deploy user |
-|mosh_from_port| from port for mosh ssh client |
-|mosh_to_port| to port for mob ssh client |
+|logwatch_email| email for logwatch reports |
 |node_build_command| build command for npm, e.g., `npm run develop` |
 |node_version| version of nodejs to install e.g., v10.0.0 |
 |optional_packages| Packages that can be overriden by host/group. I got this from https://ryaneschinger.com/blog/securing-a-server-with-ansible/ |
@@ -59,6 +64,3 @@ My architecture is somewhat convoluted or appears to be against the Ansible way.
 |required_packages| Packages that will be installed on every server |
 |root_password| password for root user on machine |
 |web_dir| root for websites, e.g., `/var/www` |
-
-
-

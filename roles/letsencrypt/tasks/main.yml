@@ -1,9 +1,16 @@
 ---
-
-- name: Install lets encrypt
-  git: >
-    dest=/opt/letsencrypt
-    repo=https://github.com/letsencrypt/letsencrypt
-    update=no
-  register: cloned
+- name: install packages
+  apt: name={{ item }} update_cache=yes state=latest force=yes
+  with_items:
+    - letsencrypt
+    - python3-certbot-nginx
   become: yes
+
+- name: Creates /opt/letsencrypt
+  become: yes
+  file:
+    path: /opt/letsencrypt
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: 0775

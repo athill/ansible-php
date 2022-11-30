@@ -1,0 +1,5 @@
+
+- name: "start backend"
+  shell: pm2 start server/index.js
+  args:
+    chdir: "{{ project_dir }}"

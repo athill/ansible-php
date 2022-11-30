@@ -4,7 +4,17 @@
   remote_user: deploy
 
   roles:
-    ## wimf
+    ## andyhill
+    - { role: site,
+      project_dir: "{{ andyhill_project_dir }}",
+      repo_url: "{{ andyhill_repo_url }}",
+      host: "{{ andyhill_host }}",
+      app_name: "{{ andyhill_app_name }}",
+      web_sub_dir: build,
+      node_build_command: npm run build,
+      use_laravel: false
+    }    
+    # ## wimf
     # - { role: site,
     #     project_dir: "{{ wimf_project_dir }}",
     #     repo_url: "{{ wimf_repo_url }}",
@@ -12,39 +22,29 @@
     #     app_name: "{{ wimf_app_name }}",
     #     db_database: "{{ wimf_db_database }}",
     #     db_password: "{{ wimf_db_password }}",
-    #     db_user: "{{ wimf_db_user }}"     
+    #     db_user: "{{ wimf_db_user }}",
+    #     use_laravel: true,
+    #     node_build_command: npm run build
     #   }
-    ## informed
+    # ## sitecheck
     # - { role: site,
-    #     project_dir: "{{ informed_project_dir }}",
-    #     repo_url: "{{ informed_repo_url }}",
-    #     host: "{{ informed_host }}",
-    #     app_name: "{{ informed_app_name }}",
+    #     project_dir: "{{ sitecheck_project_dir }}",
+    #     repo_url: "{{ sitecheck_repo_url }}",
+    #     host: "{{ sitecheck_host }}",
+    #     app_name: "{{ sitecheck_app_name }}",
+    #     db_database: "{{ sitecheck_db_database }}",
+    #     db_password: "{{ sitecheck_db_password }}",
+    #     db_user: "{{ sitecheck_db_user }}",
+    #     use_laravel: true
     #   }  
-    # ## upcfinance
-    # - { role: site,
-    #     project_dir: "{{ upcfinance_project_dir }}",
-    #     repo_url: "{{ upcfinance_repo_url }}",
-    #     host: "{{ upcfinance_host }}",
-    #     app_name: "{{ upcfinance_app_name }}",
-    #   }  
-    ## sitecheck
-    - { role: site,
-        project_dir: "{{ sitecheck_project_dir }}",
-        repo_url: "{{ sitecheck_repo_url }}",
-        host: "{{ sitecheck_host }}",
-        app_name: "{{ sitecheck_app_name }}",
-        db_database: "{{ sitecheck_db_database }}",
-        db_password: "{{ sitecheck_db_password }}",
-        db_user: "{{ sitecheck_db_user }}"             
-      }  
-    ## pkcar
+    # ## pkcar
     # - { role: site,
     #     project_dir: "{{ pkcar_project_dir }}",
     #     repo_url: "{{ pkcar_repo_url }}",
     #     host: "{{ pkcar_host }}",
     #     app_name: "{{ pkcar_app_name }}",
-    #     db_database: "{{ pkcar_db_database }}",
-    #     db_password: "{{ pkcar_db_password }}",
-    #     db_user: "{{ pkcar_db_user }}"             
-    #   }     
+    #     web_sub_dir: build,
+    #     node_build_command: npm run build                
+    #   }  
+
+       

@@ -10,13 +10,6 @@
 #   template: src=github-oauth.json.j2 dest="/home/{{ deploy_user_name }}/.config/composer/auth.json" owner="{{ deploy_user_name }}"
 
 
-# composer
-- name: "{{ host }} composer install"
-  composer: 
-    command: install 
-    working_dir: "{{ project_dir }}" 
-#  when: cloned|changed
-
 ## node
 - name: "{{ host }} set NODE_ENV"
   shell: export NODE_ENV={{ app_env }}
@@ -42,17 +35,4 @@
 - name: "{{ host }} copy .env file"
   template: src={{ app_name }}.env.j2  dest={{ project_dir }}/.env force=yes
 
-
-# artisan migrate
-- name: "{{ host }}  artisan migrate"
-  shell: php "{{ project_dir }}/artisan" migrate --force
-  args:
-    chdir: "{{ project_dir }}" 
-  when: use_laravel and db_database is defined and db_database
-
-- name: Install artisan scheduler cron for {{ host }} 
-  when: use_laravel
-  cron: 
-    name: "Run scheduler for {{ app_name }}"  
-    job: "php {{ project_dir }}/artisan schedule:run >> /dev/null 2>&1"
 

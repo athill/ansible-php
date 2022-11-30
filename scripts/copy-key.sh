@@ -1,0 +1,1 @@
+cat /home/vagrant/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys

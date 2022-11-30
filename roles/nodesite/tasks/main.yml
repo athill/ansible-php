@@ -13,26 +13,26 @@
     line: 'PATH=~/bin:$PATH'
 
 - name: Set up application directory
-  include_tasks: app_dir.yml
-  # become: true
+  include: app_dir.yml
+  become: true
 
 - name: Set up nginx
-  include_tasks: server.yml
-  # become: true
+  include: server.yml
+  become: true
 
-- name: Set up let's encrypt
-  include_tasks: ssl.yml
+# - name: Set up let's encrypt
+#   include: ssl.yml
+#   become: true
 
-- name: Database
-  include_tasks: db.yml
-  when: db_database is defined and db_database
+# - name: Database
+#   include: db.yml
+#   when: db_database is defined and db_database
 
 - name: Build
-  include_tasks: build.yml
+  include: build.yml
 
 - name: final restarts
   command: /bin/true
   become: true
   notify:
-    - restart php-fpm
     - restart nginx
