@@ -14,12 +14,10 @@
 
 - name: Set up application directory
   include_tasks: app_dir.yml
-  # become: true
-
+  
 - name: Set up nginx
   include_tasks: server.yml
-  # become: true
-
+  
 - name: Set up let's encrypt
   include_tasks: ssl.yml
 

@@ -1,0 +1,23 @@
+| variable | description |
+|----------|-------------|
+|app_debug| used in laravel .env files to turn debugging on and off |
+|app_env| used in laravel .env files to set the application environment, e.g., develop, production |
+|backup_dir| root directory for mysql backups |
+|db_root_password| password for mysql root user |
+|deploy_password| password for deploy user |
+|deploy_public_keys| list of paths of public keys to allow ssh access for deploy user |
+|deploy_user_name| username for deploy user |
+|mosh_from_port| from port for mosh ssh client |
+|mosh_to_port| to port for mob ssh client |
+|node_build_command| build command for npm, e.g., `npm run develop` |
+|node_version| version of nodejs to install e.g., v10.0.0 |
+|optional_packages| I guess packages that you can exclude? I got this from https://ryaneschinger.com/blog/securing-a-server-with-ansible/ |
+|php_version| version of php to install (e.g., `7.2`) |
+|report_email| email to send reports to |
+|repo_version| branch, tag, etc. of code repository |
+|required_packages| I guess packages that you can't exclude |
+|root_password| password for root user on machine |
+|web_dir| root for websites, e.g., `/var/www` |
+
+
+cat group_vars/* | grep : | cut -d : -f 1 | sort | uniq | sort > notes/vars-tmp.txt

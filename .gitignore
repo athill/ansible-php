@@ -2,6 +2,5 @@ group_vars
 host_vars
 .vagrant
 hosts
-notes
 db.txt
 *.retry

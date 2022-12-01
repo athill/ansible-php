@@ -1,12 +1,12 @@
 ---
 
 - name: make bin dir
-  file: path="{{user_dir}}/bin" state=directory mode=0755 owner="{{user}}"
+  file: path="{{user_dir}}/bin" state=directory mode=0755 owner="{{deploy_user_name}}"
   become: yes
 
 - name: copy gitconfig script
-  template: src=.gitconfig.j2 dest="{{user_dir}}/.gitconfig" owner="{{user}}" mode=0644
+  template: src=.gitconfig.j2 dest="{{user_dir}}/.gitconfig" owner="{{deploy_user_name}}" mode=0644
 
 - name: copy .bash_profile script
-  template: src=.bash_profile.j2 dest="{{user_dir}}/.bash_profile" owner="{{user}}" mode=0644
+  template: src=.bash_profile.j2 dest="{{user_dir}}/.bash_profile" owner="{{deploy_user_name}}" mode=0644
   become: yes

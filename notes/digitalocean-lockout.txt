@@ -1,0 +1,3 @@
+Log in via web console
+$ vi /etc/ssh/sshd_config
+Find PasswordAuthentication and set to yes
