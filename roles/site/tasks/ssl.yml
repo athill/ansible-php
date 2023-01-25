@@ -1,38 +1,36 @@
 ---
 
-- name: copy {{ host }} ini file
-  template: src=le-renew.ini.j2 dest=/usr/local/etc/le-renew-{{ host }}.ini
-  become: yes
 
 - name: stop nginx
   become: yes
   service: name=nginx state=stopped
 
-- name: Configure {{ host }} nginx
+- name: install cert
   become: yes
-  template: src=nginx-ssl.conf.j2 dest=/etc/nginx/sites-available/{{ host }}  
+  shell: certbot --nginx -d {{ host }} -d www.{{ host }}
 
-- name: create {{ host }} .well-known directory
-  become: yes
-  file: path={{ project_dir }}/public/.well-known state=directory mode=0755 owner={{ deploy_user_name }} group=www-data
+# - name: Configure {{ host }} nginx
+#   become: yes
+#   template: src=nginx-ssl.conf.j2 dest=/etc/nginx/sites-available/{{ host }}  
 
-- name: run letsencrypt
-  become: yes
-  shell: letsencrypt certonly --standalone --agree-tos --config /usr/local/etc/le-renew-{{ host }}.ini
-  args: 
-    chdir: /opt/letsencrypt
-    creates: /etc/letsencrypt/live/{{host}}/fullchain.pem
+# - name: create {{ host }} .well-known directory
+#   become: yes
+#   file: path={{ project_dir }}/public/.well-known state=directory mode=0755 owner={{ deploy_user_name }} group=www-data
+
+# - name: run letsencrypt
+#   become: yes
+#   shell: letsencrypt certonly --standalone --agree-tos --config /usr/local/etc/le-renew-{{ host }}.ini
+#   args: 
+#     chdir: /opt/letsencrypt
+#     creates: /etc/letsencrypt/live/{{host}}/fullchain.pem
 
 - name: start nginx
   become: yes
   service: name=nginx state=started
 
-- name: copy {{ host }} renewal script
-  become: yes
-  template: src=le-renew.j2 dest=/usr/local/sbin/le-renew-{{ host }} mode=0700
+# - name: copy {{ host }} renewal script
+#   become: yes
+#   template: src=le-renew.j2 dest=/usr/local/sbin/le-renew-{{ host }} mode=0700
 
-- name: Install {{ host }} renewal cron
-  become: yes
-  cron: name="Let's Encrypt Renewal {{ host }}" day=1 hour=2 minute=30 
-        job="/usr/local/sbin/le-renew-{{ host }} >> /var/log/le-renewal.log"
+
                 

@@ -14,29 +14,29 @@
     #   node_build_command: npm run build,
     #   use_laravel: false
     # }    
-    # ## wimf
-    # - { role: site,
-    #     project_dir: "{{ wimf_project_dir }}",
-    #     repo_url: "{{ wimf_repo_url }}",
-    #     host: "{{ wimf_host }}",
-    #     app_name: "{{ wimf_app_name }}",
-    #     db_database: "{{ wimf_db_database }}",
-    #     db_password: "{{ wimf_db_password }}",
-    #     db_user: "{{ wimf_db_user }}",
-    #     use_laravel: true,
-    #     node_build_command: npm run build
-    #   }
-    ## sitecheck
+    ## wimf
     - { role: site,
-        project_dir: "{{ sitecheck_project_dir }}",
-        repo_url: "{{ sitecheck_repo_url }}",
-        host: "{{ sitecheck_host }}",
-        app_name: "{{ sitecheck_app_name }}",
-        db_database: "{{ sitecheck_db_database }}",
-        db_password: "{{ sitecheck_db_password }}",
-        db_user: "{{ sitecheck_db_user }}",
-        use_laravel: true
-      }  
+        project_dir: "{{ wimf_project_dir }}",
+        repo_url: "{{ wimf_repo_url }}",
+        host: "{{ wimf_host }}",
+        app_name: "{{ wimf_app_name }}",
+        db_database: "{{ wimf_db_database }}",
+        db_password: "{{ wimf_db_password }}",
+        db_user: "{{ wimf_db_user }}",
+        use_laravel: true,
+        node_build_command: npm run build
+      }
+    # ## sitecheck
+    # - { role: site,
+    #     project_dir: "{{ sitecheck_project_dir }}",
+    #     repo_url: "{{ sitecheck_repo_url }}",
+    #     host: "{{ sitecheck_host }}",
+    #     app_name: "{{ sitecheck_app_name }}",
+    #     db_database: "{{ sitecheck_db_database }}",
+    #     db_password: "{{ sitecheck_db_password }}",
+    #     db_user: "{{ sitecheck_db_user }}",
+    #     use_laravel: true
+    #   }  
     # ## pkcar
     # - { role: site,
     #     project_dir: "{{ pkcar_project_dir }}",

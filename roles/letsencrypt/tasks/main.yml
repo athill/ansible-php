@@ -5,12 +5,4 @@
     - letsencrypt
     - python3-certbot-nginx
   become: yes
-
-- name: Creates /opt/letsencrypt
-  become: yes
-  file:
-    path: /opt/letsencrypt
-    state: directory
-    owner: www-data
-    group: www-data
-    mode: 0775
+ 
